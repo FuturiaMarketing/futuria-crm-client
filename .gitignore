@@ -1,0 +1,8 @@
+# Local environment — never commit the client's CRM token
+.env
+.env.local
+*.local
+
+# OS / editor noise
+.DS_Store
+Thumbs.db

@@ -1,0 +1,33 @@
+{
+  "name": "futuria-crm",
+  "version": "0.1.0",
+  "description": "Assistente Futuria CRM dual-runtime (Codex + Claude): l'agente usa il tuo account Futuria CRM per contatti, conversazioni, opportunità, appuntamenti, task, tag, contenuti e pagamenti. Capability-first (MCP Futuria CRM, poi API, poi interfaccia). Risposte in italiano.",
+  "author": {
+    "name": "Futuria Marketing"
+  },
+  "license": "UNLICENSED",
+  "keywords": [
+    "futuria",
+    "futuria-crm",
+    "crm"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Futuria CRM",
+    "shortDescription": "Assistente per il tuo account Futuria CRM.",
+    "longDescription": "Skill che permette al tuo agente AI di operare sul tuo account Futuria CRM: contatti, conversazioni e messaggi, opportunità e pipeline, appuntamenti, task, tag, email, social, blog e pagamenti. Si collega al tuo account tramite il server MCP Futuria CRM; in fallback usa l'API o l'interfaccia. Le risposte sono sempre in italiano e parlano sempre di Futuria CRM.",
+    "developerName": "Futuria Marketing",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Crea un nuovo contatto nel mio account Futuria CRM.",
+      "Mostrami lo stato delle opportunità nella mia pipeline.",
+      "Spiegami come funzionano i crediti del mio account Futuria CRM.",
+      "Programma un post social dal mio account Futuria CRM."
+    ],
+    "screenshots": []
+  }
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Futuria CRM"
+  short_description: "Assistente per il tuo account Futuria CRM"
+  default_prompt: "Use $futuria-crm to inspect or update an asset in my Futuria CRM account."
