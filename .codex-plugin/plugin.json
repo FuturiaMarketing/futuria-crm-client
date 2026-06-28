@@ -1,6 +1,6 @@
 {
   "name": "futuria-crm",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Assistente Futuria CRM dual-runtime (Codex + Claude): l'agente usa il tuo account Futuria CRM per contatti, conversazioni, opportunità, appuntamenti, task, tag, contenuti e pagamenti. Capability-first (MCP Futuria CRM, poi API, poi interfaccia). Risposte in italiano.",
   "author": {
     "name": "Futuria Marketing"

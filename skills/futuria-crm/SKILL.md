@@ -56,6 +56,7 @@ Load per area:
 - `references/terminology-and-voice.md` — the brand law in full, substitution table, client-facing language, wallet/credit model, do/don't examples. **Read this whenever wording matters.**
 - `references/getting-started.md` — connect the Futuria CRM MCP, token vs `locationId`, capability-first checks, first sanity read.
 - `references/contacts-tags-tasks.md` — contacts (create/update/upsert/search), tags, contact tasks.
+- `references/contacts-pulizia-liste.md` — pulizia liste: riconoscere ed eliminare spam/fake (skill `pulisci-liste-crm`).
 - `references/conversations-messaging.md` — search conversations, read and send messages.
 - `references/opportunities-pipelines.md` — pipelines and opportunities (search/get/update).
 - `references/calendars-appointments.md` — calendar events and appointment notes.
