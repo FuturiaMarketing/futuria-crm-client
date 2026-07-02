@@ -2,44 +2,48 @@
 
 How to get the agent operating on the user's Futuria CRM account. Read this once per environment, then move to the area reference for the actual task.
 
-## 1. The Futuria CRM MCP (primary channel)
+## 1. The two credentials
 
-- The plugin ships an MCP server named **`futuria-crm`** (see the plugin's `.mcp.json`). Its tools are named `…futuria-crm_<area>_<action>`, e.g.:
-  - `contacts_create-contact`, `contacts_get-contacts`, `contacts_add-tags`
-  - `conversations_search-conversation`, `conversations_send-a-new-message`
-  - `opportunities_search-opportunity`, `opportunities_get-pipelines`
-  - `calendars_get-calendar-events`
-  - `emails_fetch-template`, `social-media-posting_create-post`, `blogs_create-blog-post`
-  - `payments_list-transactions`, `locations_get-custom-fields`
-- The tool names already say `futuria-crm` — safe to reason about out loud. They never expose a vendor brand.
+The connection to the account is two environment variables on the user's machine:
 
-## 2. Authentication
+| Variable | What it is | Format |
+| --- | --- | --- |
+| `FUTURIA_CRM_TOKEN` | Private integration token of the account | starts with `pit-`, ~40 chars |
+| `FUTURIA_CRM_LOCATION` | The account id (some endpoints call it `locationId`) | ~20 alphanumeric chars |
 
-- The MCP server authenticates with the user's account token, supplied via the environment variable **`FUTURIA_CRM_TOKEN`**.
-- That token is a **Private Integration Token** (it looks like `pit-...`). It is **not** an account id.
-- **`locationId`** is a separate identifier that some direct-API endpoints require. Keep the two distinct — confusing them is the most common cause of errors.
+- The **token** goes in the `Authorization` header; the **account id** goes in the request parameters. Confusing the two is the most common cause of errors.
+- `FUTURIA_CRM_LOCATION_ID` is accepted as an alias by the bundled scripts, but prefer `FUTURIA_CRM_LOCATION`.
 - Never print the token in clear text. When diagnosing, show only a masked prefix (first few characters).
-- The user provides their own token; there are no shared or agency credentials in this skill.
+- The user provides their own credentials; there are no shared credentials in this skill.
 
-## 3. Capability-first order
+Check availability without exposing values (any shell):
 
-For any task, pick the most specific working capability:
+```bash
+python -c "import os; t=os.environ.get('FUTURIA_CRM_TOKEN',''); l=os.environ.get('FUTURIA_CRM_LOCATION',''); print('token:', (t[:6]+'...') if t else 'MANCANTE', '| account id:', 'ok' if l else 'MANCANTE')"
+```
 
-1. **Futuria CRM MCP** — use it when a tool covers the exact resource and returns relevant data.
-2. **Direct API** — when MCP lacks the resource, is ambiguous, or you need exact control / deterministic verification. See `references/api-and-troubleshooting.md`.
-3. **Web interface** — only as a last fallback, or to visually confirm something the API can't show.
+## 2. If a credential is missing — guided setup (do not dead-end)
 
-State, briefly and in Italian, which path you used when it isn't obvious.
+The typical user is **not technical**. If a variable is missing, walk them through it in simple Italian, one step at a time:
 
-## 4. First sanity check
+1. Explain what is missing: «Per collegarmi al tuo account Futuria CRM mi servono due codici: il token di accesso e l'ID del tuo account.»
+2. Where to get the values: **il referente Futuria Marketing li fornisce all'attivazione** (è il canale consigliato). Both values also exist in the account settings, but do not send a non-technical user hunting for them — suggest writing to Futuria instead.
+3. Set them, then **restart the agent app** so it sees the new variables:
+   - **Windows (PowerShell):** `setx FUTURIA_CRM_TOKEN "pit-..."` and `setx FUTURIA_CRM_LOCATION "..."` — then close and reopen the agent.
+   - **macOS/Linux (zsh/bash):** append `export FUTURIA_CRM_TOKEN="pit-..."` and `export FUTURIA_CRM_LOCATION="..."` to the shell profile (`~/.zshrc` or `~/.bashrc`), open a new terminal, relaunch the agent.
+4. Re-run the availability check above, then the sanity read below.
 
-Before a session's first write, confirm the account is reachable:
+If the user prefers, you may run the `setx`/profile commands for them — show what you are about to run and never echo the full values back in chat.
 
-1. Run one low-risk **read** — e.g. `contacts_get-contacts` with a small limit, or `opportunities_get-pipelines`.
-2. If it returns data, the token and account are working; proceed.
-3. If it fails, classify the failure before changing anything — see the error matrix in `references/api-and-troubleshooting.md`. Do not assume an object is missing until you have confirmed the token is valid.
+## 3. First sanity read
 
-## 5. Reporting
+Before a session's first write, confirm the account is reachable (base URL and headers in `references/api-and-troubleshooting.md`):
+
+1. `GET /locations/{FUTURIA_CRM_LOCATION}` → returns the account card (name, company data). Confirm in Italian: «Sono collegato al tuo account Futuria CRM "<nome>".»
+2. If that fails for scope reasons, fall back to one low-risk read: `POST /contacts/search` with body `{"locationId": "<account id>", "pageLimit": 1, "filters": []}`.
+3. If both fail, classify the failure with the error matrix in `references/api-and-troubleshooting.md` before changing anything. Do not assume an object is missing until the token is verified.
+
+## 4. Reporting
 
 - Always reply in **Italian**, calling the platform **Futuria CRM**.
 - After a write, report the exact fields changed and the object's identifier, and confirm you re-read the result.

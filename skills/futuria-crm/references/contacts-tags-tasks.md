@@ -1,30 +1,33 @@
 # Contacts, tags & tasks
 
-Operate on people in the user's Futuria CRM account: contacts, their tags, and contact tasks.
+Operate on people in the user's Futuria CRM account: contacts, their tags, tasks and notes. Base URL, headers and pagination in `references/api-and-troubleshooting.md`.
 
-## Primary MCP tools
+## Endpoints (validated)
 
-- `contacts_get-contacts` — list/search contacts (use a small `limit` first).
-- `contacts_get-contact` — read one contact by id.
-- `contacts_create-contact` — create a new contact.
-- `contacts_update-contact` — update an existing contact by id.
-- `contacts_upsert-contact` — create-or-update by a unique key (email/phone). Prefer this over blind create when a duplicate might exist.
-- `contacts_add-tags` / `contacts_remove-tags` — manage tags on a contact.
-- `contacts_get-all-tasks` — read tasks attached to contacts.
-- `locations_get-custom-fields` — discover the account's custom fields before writing to them (field ids and types).
+| Action | Request |
+| --- | --- |
+| Search/list contacts | `POST /contacts/search` — body `{"locationId": "...", "pageLimit": 100, "filters": [], "query": "<testo>"}`; paginate with each contact's `searchAfter` cursor |
+| Read one contact | `GET /contacts/{contactId}` → `{contact}` |
+| Create | `POST /contacts/` — body includes `locationId` plus the fields |
+| Update | `PUT /contacts/{contactId}` — send only the fields to change |
+| Create-or-update | `POST /contacts/upsert` — body with `locationId` + unique key (email/phone). Prefer over blind create |
+| Delete | `DELETE /contacts/{contactId}` — destructive: confirm first, snapshot before |
+| Add / remove tags | `POST /contacts/{contactId}/tags` / `DELETE /contacts/{contactId}/tags` — body `{"tags": ["..."]}` |
+| Tags existing in the account | `GET /locations/{locationId}/tags` |
+| Contact tasks | `GET /contacts/{contactId}/tasks`; create with `POST /contacts/{contactId}/tasks` (`title`, `dueDate` ISO, `completed`) |
+| Contact notes | `GET /contacts/{contactId}/notes`; create with `POST /contacts/{contactId}/notes` (`body`) |
+| Custom fields of the account | `GET /locations/{locationId}/customFields` |
+
+Write bodies not listed field-by-field here can vary: on a `422`, read the `message` array — it names the fields — and adjust.
 
 ## Working rules
 
-- **Avoid duplicates.** Before creating, search by email or phone; if a match exists, use `upsert-contact` or `update-contact` instead of `create-contact`.
-- **Custom fields:** never assume a field exists because you saw it in an old export or template. Read `locations_get-custom-fields` and use the real field id.
-- **Tags:** create the tag implicitly by adding it; keep tag names consistent with what already exists in the account (read current tags first if unsure).
+- **Avoid duplicates.** Before creating, search by email or phone; if a match exists, use upsert or update instead of create.
+- **Custom fields:** never assume a field exists because you saw it in an old export or template. Read the account's custom fields first and use the real field id.
+- **Tags:** adding a tag creates it implicitly — read `GET /locations/{locationId}/tags` first and reuse the existing spelling instead of inventing near-duplicates.
 - **Write safety:** read the contact → apply the smallest change → re-read to confirm → report the changed fields and the contact id, in Italian.
-
-## When to use direct API
-
-- Bulk reads with precise pagination, or custom-field folder management (see `references/api-and-troubleshooting.md`).
-- When you need exact control of the request body that the MCP tool doesn't expose.
+- **Bulk deletions / list cleanup:** never improvise — use the `pulisci-liste-crm` flow (`references/contacts-pulizia-liste.md`).
 
 ## Output example (Italian)
 
-> Ho aggiornato il contatto **Maria Bianchi** (id `…`) nel tuo account Futuria CRM: aggiunto il tag `cliente-2026` e impostato il campo `Città = Padova`. Ho riletto la scheda per conferma.
+> Ho aggiornato il contatto **Maria Bianchi** nel tuo account Futuria CRM: aggiunto il tag `cliente-2026` e impostato il campo `Città = Padova`. Ho riletto la scheda per conferma.

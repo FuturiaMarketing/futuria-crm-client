@@ -1,22 +1,23 @@
 # Calendars & appointments
 
-Read calendar activity and appointment notes from the user's Futuria CRM account.
+Read calendar activity and appointment notes from the user's Futuria CRM account. Base URL and headers in `references/api-and-troubleshooting.md`.
 
-## Primary MCP tools
+## Endpoints (validated)
 
-- `calendars_get-calendar-events` — list events/appointments in a date range.
-- `calendars_get-appointment-notes` — read the notes attached to a specific appointment.
+| Action | Request |
+| --- | --- |
+| List calendars | `GET /calendars/?locationId={id}` → `calendars[]` (take the calendar ids here) |
+| List events | `GET /calendars/events?locationId={id}&startTime={ms}&endTime={ms}&calendarId={calId}` — times in **epoch milliseconds**; **one of** `calendarId`, `userId`, `groupId` is required (422 otherwise). To cover the whole account, loop over the calendars list |
+| Appointment detail | `GET /calendars/events/appointments/{eventId}` |
+| Appointment notes | `GET /calendars/appointments/{appointmentId}/notes?limit=10&offset=0` — verify the response shape on first use |
+
+Booking, moving or cancelling appointments (`POST /calendars/events/appointments`, `PUT /calendars/events/appointments/{eventId}`, `DELETE /calendars/events/{eventId}`) touches a real person's booking: confirm with the user first, and re-read after the write. If a write shape is unclear, prefer walking the user through the web interface.
 
 ## Working rules
 
-- **Read-oriented surface.** These tools read calendar state. Creating, rescheduling, or cancelling an appointment may not be exposed via MCP — fall back to the direct API or the web interface, and confirm the change with the user first (it affects a real person's booking).
-- **Date ranges:** always pass an explicit range; default windows can be misleading. Use the account's timezone.
+- **Date ranges:** always pass an explicit range; convert dates to epoch milliseconds and use the account's timezone (it is in the account card, `GET /locations/{id}`).
 - **Cross-reference contacts:** an appointment usually links to a contact — use the contact reference if the user wants the full picture.
-
-## When to use direct API or interface
-
-- To book, move, or cancel an appointment when no MCP tool covers it.
-- To inspect calendar configuration (availability, team members) not returned by the event read.
+- **Calendar configuration** (availability, team members) is builder territory: read what the API returns, but send configuration changes to the web interface.
 
 ## Output example (Italian)
 

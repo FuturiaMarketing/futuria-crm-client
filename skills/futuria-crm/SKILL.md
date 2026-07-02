@@ -1,6 +1,6 @@
 ---
 name: futuria-crm
-description: Use when the task involves Futuria CRM, the all-in-one CRM, marketing and commerce platform. Trigger for requests about contacts, conversations and messages, opportunities and pipelines, appointments and calendars, tasks, tags, email templates, social posts, blog posts, payments and orders, automations, account credits and wallet, or access and authentication issues. Operate the user account capability-first — the Futuria CRM MCP first, validated direct API next, web interface only as fallback — and always reply in Italian, always calling the platform Futuria CRM.
+description: Use when the task involves Futuria CRM, the all-in-one CRM, marketing and commerce platform. Trigger for requests about contacts, conversations and messages, opportunities and pipelines, appointments and calendars, tasks, tags, email templates, social posts, blog posts, payments and orders, automations, account credits and wallet, or access and authentication issues. Operate the user account API-first — the Futuria CRM direct API with the credentials in FUTURIA_CRM_TOKEN and FUTURIA_CRM_LOCATION, web interface only as fallback — and always reply in Italian, always calling the platform Futuria CRM.
 ---
 
 # Futuria CRM
@@ -21,20 +21,22 @@ This is the most important rule in the skill. It overrides convenience, source m
 
 When in doubt about wording, load `references/terminology-and-voice.md`. It carries the full substitution table and the do/don't examples.
 
-## 2. Single-account model
+## 2. Single-account model, API-first
 
 - The user has **one** Futuria CRM account. There is no agency view and no multi-account switching.
-- One access token operates that account. A token starting `pit-...` is a Private Integration Token, **not** an account id.
-- `locationId` is a separate identifier some API endpoints require. Never confuse the token with the `locationId`.
+- Two environment variables connect the agent to that account:
+  - **`FUTURIA_CRM_TOKEN`** — the account's private integration token (starts with `pit-`). Goes in the auth header of every request.
+  - **`FUTURIA_CRM_LOCATION`** — the account id, a separate identifier most endpoints require as a parameter. Never confuse the token with the account id.
 - Capability priority for every task:
-  1. **MCP first** — the `futuria-crm` MCP server exposes tools named `…futuria-crm_<area>_<action>` (e.g. `contacts_create-contact`). Use it when it covers the resource.
-  2. **Direct API** — when MCP lacks the resource, is ambiguous, or you need exact request/response control. See `references/api-and-troubleshooting.md`.
-  3. **Web interface** — only as last fallback or for visual verification.
+  1. **Direct API** — the canonical channel. Endpoint families, headers, pagination and the error matrix are in `references/api-and-troubleshooting.md`; per-area endpoints are in each area reference. All endpoints there are validated.
+  2. **Web interface** — only for builder-only internals the API does not expose, or to visually confirm something for the user.
+  - If the session also exposes ready-made Futuria CRM tools (for example through a connector), you may use them for convenient reads — but the API remains the source of truth, especially for writes and verification.
+- If one or both environment variables are missing, do not dead-end: guide the user through setup in plain Italian — see `references/getting-started.md`.
 
 ## 3. Fast start
 
 1. Identify the area and load the matching reference (see the map below). Load only what you need.
-2. Validate context minimally: if the account/token is already working in this session, do one read sanity check instead of a full diagnostic.
+2. Validate context minimally: if the account already responded in this session, do one read sanity check instead of a full diagnostic.
 3. For writes: read current state → apply the smallest change → re-read through the canonical surface → report exactly what changed, in Italian.
 
 ## 4. Write safety
@@ -54,14 +56,14 @@ Never print the access token in clear text; show only a masked prefix when diagn
 Load per area:
 
 - `references/terminology-and-voice.md` — the brand law in full, substitution table, client-facing language, wallet/credit model, do/don't examples. **Read this whenever wording matters.**
-- `references/getting-started.md` — connect the Futuria CRM MCP, token vs `locationId`, capability-first checks, first sanity read.
-- `references/contacts-tags-tasks.md` — contacts (create/update/upsert/search), tags, contact tasks.
+- `references/getting-started.md` — environment variables, guided setup for non-technical users, first sanity read.
+- `references/api-and-troubleshooting.md` — base URL, headers, parameter conventions per endpoint family, pagination, rate limits, error matrix. **The technical foundation for every API call.**
+- `references/contacts-tags-tasks.md` — contacts (search/create/update/upsert/delete), tags, contact tasks and notes, custom fields.
 - `references/contacts-pulizia-liste.md` — pulizia liste: riconoscere ed eliminare spam/fake (skill `pulisci-liste-crm`).
 - `references/conversations-messaging.md` — search conversations, read and send messages.
 - `references/opportunities-pipelines.md` — pipelines and opportunities (search/get/update).
-- `references/calendars-appointments.md` — calendar events and appointment notes.
+- `references/calendars-appointments.md` — calendars, events and appointment notes.
 - `references/content-marketing.md` — email templates, social posts, blog posts.
-- `references/payments-orders.md` — orders and transactions (read-mostly).
-- `references/api-and-troubleshooting.md` — direct API fallback, headers, error matrix (401/403/422/no-op). The only place a technical host name may appear.
+- `references/payments-orders.md` — orders and transactions (read-only).
 
 For endpoint shapes or possible platform changes, verify the technical detail before relying on memory — then describe everything as Futuria CRM, in Italian.

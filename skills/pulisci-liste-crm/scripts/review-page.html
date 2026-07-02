@@ -3,56 +3,61 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pulisci liste — Futuria CRM</title>
+<title>Pulizia liste — Futuria CRM</title>
 <style>
   :root{
-    --pur:#534AB7; --pur-bg:#EEEDFE; --red:#A32D2D; --red-bg:#FCEBEB;
-    --grn:#0F6E56; --grn-bg:#E1F5EE; --ink:#26215C; --bd:#E4E2EE;
-    --mut:#6b6878; --hint:#908ca0; --bg:#F7F6FB; --srf:#fff;
+    --navy:#103D66; --navy-h:#1E4B74; --ink:#020817; --sec:#4B5563; --mut:#94A3B8;
+    --green:#6DA34D; --green-h:#56833D; --green-bg:#EAF2E1;
+    --danger:#EF4444; --danger-bg:#FEE2E2;
+    --bg:#F7F8FA; --srf:#FFFFFF; --bd:#E4E8EE; --bd2:#D0D6DE; --soft:#EEF1F5;
   }
   *{box-sizing:border-box}
-  body{margin:0; background:var(--bg); color:#201d2b;
-       font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;}
+  body{margin:0; background:var(--bg); color:var(--ink);
+       font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;}
   .wrap{max-width:680px; margin:0 auto; padding:1.6rem 1.1rem 4rem;}
-  .h{display:flex; align-items:center; gap:.5rem; font-size:20px; font-weight:600; color:var(--ink);}
-  .sub{color:var(--mut); font-size:14px; margin:.3rem 0 1.1rem;}
-  .meta-top{display:inline-block; font-size:12px; color:var(--mut);
-            background:var(--pur-bg); border-radius:999px; padding:.15rem .6rem; margin-bottom:1rem;}
-  .card{background:var(--srf); border:1px solid var(--bd); border-left:4px solid var(--red);
+  .h{font-family:"Cal Sans",system-ui,sans-serif; font-size:22px; font-weight:700; color:var(--navy);}
+  .sub{color:var(--sec); font-size:14.5px; margin:.35rem 0 .6rem;}
+  .safe{font-size:13px; color:var(--green-h); background:var(--green-bg);
+        border-radius:8px; padding:.5rem .7rem; margin:0 0 1rem;}
+  .meta-top{display:inline-block; font-size:12px; color:var(--sec);
+            background:var(--soft); border-radius:999px; padding:.15rem .6rem; margin-bottom:1rem;}
+  .card{background:var(--srf); border:1px solid var(--bd); border-left:4px solid var(--danger);
         border-radius:10px; padding:.85rem .95rem; margin-bottom:.7rem;}
   .top{display:flex; align-items:flex-start; justify-content:space-between; gap:.7rem;}
   .idwrap{display:flex; gap:.6rem; align-items:center; min-width:0;}
   .av{width:36px; height:36px; border-radius:999px; background:var(--bg); border:1px solid var(--bd);
-      display:flex; align-items:center; justify-content:center; color:var(--mut);
+      display:flex; align-items:center; justify-content:center; color:var(--sec);
       font-size:13px; font-weight:600; flex:0 0 auto;}
   .name{font-weight:600; overflow-wrap:anywhere;}
-  .name.empty{color:var(--mut); font-weight:500;}
+  .name.empty{color:var(--sec); font-weight:500;}
   .mono{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:13px; overflow-wrap:anywhere;}
-  .email{color:var(--mut);}
-  .meta{color:var(--mut); font-size:13px; margin-top:.2rem;}
+  .email{color:var(--sec);}
+  .meta{color:var(--sec); font-size:13px; margin-top:.2rem;}
   .badge{font-size:11px; font-weight:600; border-radius:999px; padding:.12rem .55rem;
-         background:var(--red-bg); color:var(--red); white-space:nowrap;}
+         background:var(--danger-bg); color:var(--danger); white-space:nowrap;}
   .sigs{display:flex; flex-wrap:wrap; gap:.35rem; margin:.55rem 0 .1rem;}
-  .chip{font-size:12px; color:var(--mut); background:var(--bg); border:1px solid var(--bd);
+  .chip{font-size:12px; color:var(--sec); background:var(--bg); border:1px solid var(--bd);
         border-radius:999px; padding:.12rem .55rem;}
   .row{display:flex; align-items:center; justify-content:flex-end; gap:.7rem; margin-top:.6rem;}
-  .seg{display:inline-flex; border:1px solid var(--bd); border-radius:999px; overflow:hidden;}
+  .seg{display:inline-flex; border:1px solid var(--bd2); border-radius:999px; overflow:hidden;}
   .seg button{font:inherit; font-size:13px; padding:.3rem .85rem; background:transparent;
-              color:var(--mut); border:0; cursor:pointer;}
-  .seg button.on[data-act="elimina"]{background:var(--red-bg); color:var(--red); font-weight:600;}
-  .seg button.on[data-act="tieni"]{background:var(--grn-bg); color:var(--grn); font-weight:600;}
+              color:var(--sec); border:0; cursor:pointer;}
+  .seg button:focus-visible{outline:2px solid color-mix(in oklch, #6DA34D 50%, white); outline-offset:-2px;}
+  .seg button.on[data-act="elimina"]{background:var(--danger-bg); color:var(--danger); font-weight:600;}
+  .seg button.on[data-act="tieni"]{background:var(--green-bg); color:var(--green-h); font-weight:600;}
   .bar{position:sticky; bottom:0; display:flex; align-items:center; justify-content:space-between;
        gap:1rem; flex-wrap:wrap; background:var(--srf); border:1px solid var(--bd);
        border-radius:10px; padding:.7rem .95rem; margin-top:.5rem;}
   .actions{display:flex; gap:.5rem; align-items:center;}
-  .linklike{font:inherit; font-size:13px; background:transparent; border:0; color:var(--pur);
+  .linklike{font:inherit; font-size:13px; background:transparent; border:0; color:var(--green-h);
             cursor:pointer; text-decoration:underline;}
-  #count{font-weight:600;}
-  #go{font:inherit; font-size:14px; font-weight:600; padding:.5rem 1rem; border-radius:8px;
-      border:1px solid var(--pur); background:var(--pur); color:#fff; cursor:pointer;}
-  #go:disabled{opacity:.45; cursor:default;}
-  .done{text-align:center; padding:3.5rem 1rem; color:var(--grn); font-size:18px; font-weight:600;}
-  .done small{display:block; color:var(--mut); font-weight:400; font-size:14px; margin-top:.6rem;}
+  #count{font-weight:600; color:var(--navy);}
+  #go{font:inherit; font-size:14px; font-weight:700; padding:.55rem 1.1rem; border-radius:8px;
+      border:1px solid var(--navy); background:var(--navy); color:#fff; cursor:pointer;}
+  #go:hover{background:var(--navy-h);}
+  #go:focus-visible{outline:2px solid color-mix(in oklch, #6DA34D 50%, white); outline-offset:2px;}
+  .done{text-align:center; padding:3.5rem 1rem; color:var(--green-h); font-size:18px; font-weight:600;}
+  .done small{display:block; color:var(--sec); font-weight:400; font-size:14px; margin-top:.6rem;}
 </style>
 </head>
 <body>
@@ -90,7 +95,7 @@
               <div class="mono email">${esc(c.email) || "—"}</div>
             </div>
           </div>
-          <span class="badge">delete-grade</span>
+          <span class="badge">sospetto</span>
         </div>
         <div class="meta">${metaBits}</div>
         <div class="sigs">${sigs}</div>
@@ -104,8 +109,11 @@
     }).join("");
 
     document.getElementById("app").innerHTML = `
-      <div class="h">Pulisci liste — Futuria CRM</div>
-      <div class="sub">Rivedi i contatti segnalati come sospetti. Marca <b>tieni</b> o <b>elimina</b>, poi conferma: le scelte tornano allo strumento locale.</div>
+      <div class="h">Pulizia liste — Futuria CRM</div>
+      <div class="sub">Questi contatti del tuo account sembrano spam o profili fasulli.
+        Rivedili uno per uno: marca <b>tieni</b> per quelli da conservare, lascia <b>elimina</b> sugli altri.</div>
+      <div class="safe">Da questa pagina non parte nessuna eliminazione: le tue scelte tornano
+        all'assistente, che farà prima una prova a vuoto e ti chiederà conferma.</div>
       <div class="meta-top">${esc(DATA.candidates.length)} candidati su ${esc(DATA.total)} contatti analizzati</div>
       ${cards}
       <div class="bar">
@@ -123,7 +131,7 @@
     state[id] = d;
     const card = document.getElementById("card-" + id);
     card.querySelectorAll("[data-act]").forEach(b => b.classList.toggle("on", b.getAttribute("data-act") === d));
-    card.style.borderLeftColor = (d === "elimina") ? "#A32D2D" : "#0F6E56";
+    card.style.borderLeftColor = (d === "elimina") ? "#EF4444" : "#6DA34D";
     summary();
   }
   function setAll(d){
@@ -134,8 +142,8 @@
     Object.keys(state).forEach(k => state[k] === "elimina" ? del++ : keep++);
     document.getElementById("count").textContent = del + " da eliminare · " + keep + " da tenere";
     const b = document.getElementById("go");
-    b.textContent = "Conferma eliminazioni (" + del + ")";
-    b.disabled = (del === 0);
+    b.textContent = del > 0 ? "Conferma decisioni (" + del + " da eliminare)"
+                            : "Conferma decisioni (nessuna eliminazione)";
   }
   function submitDecs(){
     const byId = {};
@@ -146,12 +154,12 @@
       (state[id] === "elimina" ? del : keep).push({id: id, email: c.email || "", name: c.name || ""});
     });
     fetch("/submit", {method:"POST", headers:{"Content-Type":"application/json"},
-                      body: JSON.stringify({delete: del, keep: keep, client: DATA.client})})
+                      body: JSON.stringify({delete: del, keep: keep})})
       .then(r => r.json())
       .then(() => {
         document.getElementById("app").innerHTML =
-          '<div class="done">Decisioni inviate.<small>Lo strumento ha ricevuto ' + del.length +
-          ' da eliminare e ' + keep.length + ' da tenere. Puoi chiudere questa scheda e tornare alla chat.</small></div>';
+          '<div class="done">Decisioni inviate.<small>L\'assistente ha ricevuto ' + del.length +
+          ' contatti da eliminare e ' + keep.length + ' da tenere. Puoi chiudere questa scheda e tornare alla chat.</small></div>';
       })
       .catch(e => alert("Errore invio: " + e));
   }

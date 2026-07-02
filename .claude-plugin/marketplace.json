@@ -10,7 +10,7 @@
     {
       "name": "futuria-crm",
       "source": "./",
-      "description": "Assistente Futuria CRM: gestisci contatti, conversazioni, opportunità, appuntamenti, contenuti e pagamenti del tuo account Futuria CRM tramite MCP, API o interfaccia.",
+      "description": "Assistente Futuria CRM: gestisci contatti, conversazioni, opportunità, appuntamenti, contenuti, pagamenti e pulizia liste del tuo account Futuria CRM, direttamente via API con le tue credenziali.",
       "author": {
         "name": "Futuria Marketing"
       },
