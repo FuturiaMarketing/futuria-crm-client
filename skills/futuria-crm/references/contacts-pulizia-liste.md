@@ -1,29 +1,29 @@
-# Pulizia liste e contatti sospetti
+# List cleanup & suspicious contacts
 
-Come riconoscere e rimuovere contatti spam, fake o spazzatura dal tuo account Futuria CRM. Automatizzato dalla skill `pulisci-liste-crm` (trova → rivedi nel browser → elimina, con prova a vuoto prima delle eliminazioni). Rispondi sempre in italiano e chiama la piattaforma sempre **Futuria CRM**.
+How to recognise and remove spam, fake or junk contacts from the user's Futuria CRM account. Automated by the `pulisci-liste-crm` skill (detect → review with the client in chat, or via an Excel checklist when candidates are many → delete, with a dry-run before any real deletion). Always reply in Italian and always call the platform **Futuria CRM**.
 
-## Principio
+## Principle
 
-Mai cancellare in base a un solo dettaglio del nome o dell'email: chi usa nomi stilizzati o email con tanti punti è spesso un contatto vero. Si elimina solo su **segnali combinati e strutturali**, e ogni eliminazione passa comunque dalla revisione umana.
+Never delete based on a single detail of the name or email: people with stylised names or heavily dotted emails are often real contacts. Deletion is justified only by **combined, structural signals**, and every deletion still goes through human review.
 
-## Cosa è spam (eliminabile, v1 ad alta precisione)
+## What is spam (delete-grade, v1 high precision)
 
-- Email con dominio "usa e getta" o temporaneo.
-- Testi scam/crypto o link nei campi del contatto.
-- **Nessuna identità**: niente nome, email e telefono.
-- Nessuna identità (no nome, no telefono) + email che sembra generata (locale casuale, cifre in serie, TLD esotico).
+- Email on a disposable or temporary domain.
+- Scam/crypto text or links inside the contact fields.
+- **No identity at all**: no name, no email, no phone.
+- No identity (no name, no phone) + an email that looks generated (random local part, digit runs, exotic TLD).
 
-## Segnali di contesto (mai sufficienti da soli)
+## Context signals (never sufficient on their own)
 
-- Molti contatti creati nello **stesso minuto**: può essere un'iniezione spam, ma anche una **normale lista importata dal titolare** — da solo non autorizza nulla.
-- Contatto arrivato da **social/WhatsApp senza nome**: quasi sempre una persona reale che ha scritto senza lasciare i dati — non è spam.
-- Nome con caratteri Unicode stilizzati, email molto puntata: spesso creator o contatti legittimi.
+- Many contacts created in the **same minute**: could be a spam injection, but also a **normal list imported by the owner** — on its own it authorises nothing.
+- Contact arriving from **social/WhatsApp without a name**: almost always a real person who wrote without leaving their data — not spam.
+- Name with stylised Unicode characters, heavily dotted email: often creators or legitimate contacts.
 
-## Cosa NON è spam (non cancellare)
+## What is NOT spam (do not delete)
 
-- Contatti veri che però **non aprono mai** le email: non sono fake. Vanno semmai esclusi dagli invii, non eliminati.
-- **Clienti, clienti ricorrenti, partner**, contatti con ordini o trattative: si proteggono sempre (protect-list attiva nello strumento).
+- Real contacts that simply **never open** emails: they are not fake. If anything, exclude them from sends — do not delete them.
+- **Clients, recurring customers, partners**, contacts with orders or open deals: always protected (protect-list active in the tool).
 
-## Perché conta (recapito email)
+## Why it matters (email deliverability)
 
-Liste piene di contatti morti o falsi peggiorano la consegna delle tue email: più finiscono nello spam, peggiora la reputazione del tuo dominio. Tenere le liste pulite migliora il recapito in posta in arrivo.
+Lists full of dead or fake contacts hurt email delivery: the more messages land in spam, the worse the sender domain's reputation gets. Clean lists improve inbox placement.

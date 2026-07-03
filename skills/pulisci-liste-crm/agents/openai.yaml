@@ -1,4 +1,4 @@
 interface:
   display_name: "Pulisci liste CRM"
-  short_description: "Trova spam, rivedi nel browser, elimina"
-  default_prompt: "Use $pulisci-liste-crm to detect spam or fake contacts in your Futuria CRM account, review them in a local browser page, and delete the marked ones (dry-run first). Always reply in Italian."
+  short_description: "Trova spam, rivedi in chat, elimina"
+  default_prompt: "Use $pulisci-liste-crm to detect spam or fake contacts in your Futuria CRM account, review them with the client directly in chat (Excel checklist when there are many), and delete the marked ones (dry-run first). Always reply in Italian."

@@ -12,7 +12,7 @@ Funziona con Claude Code e con agenti compatibili (Codex). L'agente si collega a
 - **Appuntamenti** — consulta calendari, appuntamenti e note.
 - **Contenuti** — template email, post social programmati, articoli del blog.
 - **Pagamenti** — consulta ordini e transazioni (sola lettura).
-- **Pulizia liste** — trova contatti spam/fake, te li fa rivedere in una pagina nel browser, elimina solo quelli che confermi (prima fa sempre una prova a vuoto).
+- **Pulizia liste** — trova contatti spam/fake, te li mostra in chat per la revisione (o in una checklist Excel se sono tanti), elimina solo quelli che confermi (prima fa sempre una prova a vuoto).
 
 ## Installazione
 
@@ -74,7 +74,7 @@ Oppure invoca i comandi dedicati:
 ## Pulizia liste: come funziona
 
 1. L'agente analizza i tuoi contatti e individua solo i profili **chiaramente** fasulli (domini email usa-e-getta, testi scam, profili senza alcuna identità). Clienti, partner e contatti con ordini o trattative sono sempre protetti.
-2. Si apre una pagina nel tuo browser dove decidi tu, contatto per contatto: **tieni** o **elimina**.
+2. L'agente ti mostra i candidati direttamente in chat, contatto per contatto, con i motivi del sospetto: decidi tu, **tieni** o **elimina**, rispondendo a parole tue. Se i candidati sono tanti ti prepara una checklist Excel con un menu a tendina per riga: la compili, la salvi e torni in chat.
 3. L'agente fa prima una **prova a vuoto** e ti mostra l'elenco; elimina solo dopo la tua conferma, tenendo una copia di sicurezza di ogni contatto rimosso.
 
 ## Privacy & sicurezza
@@ -84,7 +84,7 @@ Oppure invoca i comandi dedicati:
 - I dati del tuo account viaggiano solo tra la tua macchina e Futuria CRM.
 - Le azioni verso l'esterno (invio messaggi, pubblicazione contenuti) vengono confermate con te prima dell'esecuzione.
 - L'assistente non muove denaro: sui pagamenti lavora in sola lettura.
-- Le eliminazioni di contatti passano sempre da: tua revisione nel browser → prova a vuoto → tua conferma esplicita.
+- Le eliminazioni di contatti passano sempre da: tua revisione (in chat o nella checklist) → prova a vuoto → tua conferma esplicita.
 
 ## Aggiornamenti
 

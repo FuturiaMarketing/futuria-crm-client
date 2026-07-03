@@ -1,41 +1,47 @@
 ---
 name: pulisci-liste-crm
-description: Use when cleaning up your Futuria CRM contact lists - detect spam, fake or junk contacts, review them in a local browser page with keep/delete toggles, then delete the marked ones after a dry-run. Trigger on pulisci liste, pulizia contatti, clean my CRM list, rimuovi spam dai contatti, igiene contatti, /pulisci-liste-crm. Always answer in Italian and always call the platform Futuria CRM.
+description: Use when cleaning up your Futuria CRM contact lists - detect spam, fake or junk contacts, review them with the client directly in chat (or via an Excel checklist when there are many), then delete only the confirmed ones after a dry-run. Trigger on pulisci liste, pulizia contatti, clean my CRM list, rimuovi spam dai contatti, igiene contatti, /pulisci-liste-crm. Always answer in Italian and always call the platform Futuria CRM.
 ---
 
 # Pulisci liste — Futuria CRM
 
-Comando per ripulire le liste contatti del **tuo account Futuria CRM** da spam, fake e profili-spazzatura, con **review nel browser** prima di cancellare. Rispondi sempre in italiano; chiama la piattaforma sempre **Futuria CRM**, mai con altri nomi.
+Clean the contact lists of the client's **Futuria CRM** account from spam, fake and junk profiles. The review happens **directly in chat**: no local server, no browser page, no background process. Always reply in Italian; always call the platform **Futuria CRM**, never any other name.
 
-L'utente tipico **non è tecnico**: esegui tu ogni comando; a lui restano solo due gesti — decidere nella pagina del browser e confermare in chat.
+The typical client is **non-technical**: you run every command; the client only decides and confirms in chat (or fills in one Excel file when candidates are many).
 
-## Quando usarla
+## When to use
 - "pulisci le liste", "pulizia contatti", "togli gli spam", "igiene contatti", `/pulisci-liste-crm`.
 
-Per le euristiche di riconoscimento vedi `../futuria-crm/references/contacts-pulizia-liste.md` (dalla radice del plugin: `skills/futuria-crm/references/contacts-pulizia-liste.md`).
+Detection heuristics: `../futuria-crm/references/contacts-pulizia-liste.md` (from the plugin root: `skills/futuria-crm/references/contacts-pulizia-liste.md`).
 
-## Prerequisiti
-- Variabili d'ambiente del tuo account Futuria CRM: **`FUTURIA_CRM_TOKEN`** e **`FUTURIA_CRM_LOCATION`** (il token deve poter leggere ed eliminare contatti). Se mancano, guida l'utente col setup in `../futuria-crm/references/getting-started.md` — non fermarti.
-- Python 3 (solo stdlib, nessuna dipendenza). `python3` su macOS, `python` su Windows.
+## Prerequisites
+- Environment variables of the client's Futuria CRM account: **`FUTURIA_CRM_TOKEN`** and **`FUTURIA_CRM_LOCATION`** (the token must be able to read and delete contacts). If missing, guide the client through setup with `../futuria-crm/references/getting-started.md` — do not dead-end.
+- Python 3 (stdlib only, no dependencies — the Excel checklist included). `python3` on macOS, `python` on Windows.
 
-## Le tre fasi
-Script: `scripts/crm-list-cleanup.py`.
+## The flow
+Script: `scripts/crm-list-cleanup.py`. Every phase prints the path of the file it produced — pass it to the next phase.
 
-1. **detect** — trova i candidati sospetti:
+1. **detect** — find delete-grade candidates:
    `python scripts/crm-list-cleanup.py detect`
-   Stampa il path di `candidates.json` (lavora in `~/.futuria/crm-cleanup/`). Con **0 candidati**: riferisci che le liste risultano pulite e fermati qui.
-2. **review** — apri la pagina nel browser per decidere (Tieni/Elimina):
-   `python scripts/crm-list-cleanup.py review --candidates <candidates.json>`
-   Va lanciato in **background** (il server locale deve sopravvivere alla singola tool call): apre il browser, attende l'invio dell'utente **fino a 30 minuti**, poi scrive `decisions.json` e stampa il path. Spiega all'utente cosa deve fare nella pagina. Se l'attesa scade o la review si interrompe, **rilancia lo stesso comando**: eventuali decisioni precedenti vengono archiviate da sole, i contatti non vengono mai toccati in questa fase.
-3. **delete** — **dry-run di default**:
+   Prints the path of `candidates.json` (works in `~/.futuria/crm-cleanup/`). With **0 candidates**: report in Italian that the lists look clean and stop here.
+2. **review in chat** (default, up to ~50 candidates) — show the client EVERY candidate, numbered, in Italian: name, email, phone, source, creation date and the detection signals. Never hide or summarize away a candidate. Let the client answer in their own words ("elimina 1 e 3, tieni il resto"); silence or ambiguity is never consent — ask again. Then map the client's choices to contact IDs from `candidates.json` and record them deterministically:
+   `python scripts/crm-list-cleanup.py decide --candidates <candidates.json> --delete <id1,id2,...>`
+   (or `--keep-all` / `--delete-all`). The script accepts only IDs present among the candidates and writes `decisions.json`.
+3. **review via Excel checklist** (fallback: more than ~50 candidates, or the client prefers a file):
+   `python scripts/crm-list-cleanup.py checklist --candidates <candidates.json>`
+   generates `pulizia-liste-checklist.xlsx`: one row per candidate with the signals, a dropdown **Elimina/Tieni** per row pre-set to Elimina. Tell the client to open it, set **Tieni** on the contacts to keep, save the file and come back to chat. Then:
+   `python scripts/crm-list-cleanup.py decide --candidates <candidates.json> --from-checklist <path.xlsx>`
+   Rows left blank, removed, or with anything other than Elimina count as **Tieni**.
+4. **delete** — **dry-run by default**:
    `python scripts/crm-list-cleanup.py delete --decisions <decisions.json>`
-   Mostra all'utente l'elenco `WOULD_DELETE`. **Solo dopo conferma esplicita in chat**, rilancia con `--execute`.
+   Show the client the `WOULD_DELETE` list. **Only after an explicit confirmation in chat**, rerun with `--execute`.
 
-Al termine riferisci in italiano: eliminati / già assenti / protetti-saltati / falliti, e dove si trova lo snapshot di sicurezza.
+At the end report in Italian: deleted / already gone / protected-skipped / failed, and where the safety snapshot lives.
 
-## Sicurezza (già nello script, non aggirarla)
-- **Dry-run di default**; si cancella solo ciò che l'utente ha marcato `elimina` nella pagina e riconfermato in chat.
-- **Protect-list** attiva (clienti, ricorrenti, partner, fornitori); tag extra con `--protect-tags`.
-- **Snapshot** completo dei contatti in detect; in `--execute` ogni contatto viene **riletto** prima dell'eliminazione (snapshot pre-delete + skip se nel frattempo è diventato protetto).
-- Eliminazioni tolleranti se un contatto è già sparito; ritmo rispettoso dei limiti API.
-- v1 propone solo **fake strutturali**: i contatti veri che non aprono mai le email non vengono toccati, e un contatto WhatsApp/social senza nome non è mai un candidato.
+## Safety (built into the script — do not bypass it)
+- **Dry-run by default**; a contact is deleted only if the client marked it Elimina AND re-confirmed in chat on the dry-run list.
+- `decide` is the only writer of `decisions.json` and validates every ID against the detected candidates — never hand-craft or edit that file.
+- **Protect-list** always on (clients, recurring customers, partners, suppliers); extra tags with `--protect-tags`.
+- Full contact **snapshot** at detect; with `--execute` every contact is **re-read** first (pre-delete snapshot + skip if it became protected in the meantime).
+- Deletions tolerate contacts already gone; API rate limits respected.
+- v1 flags only **structural fakes**: real contacts that never open emails are untouched, and a WhatsApp/social contact without a name is never a candidate.
