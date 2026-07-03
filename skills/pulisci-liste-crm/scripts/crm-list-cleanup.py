@@ -519,7 +519,8 @@ def main():
     r = sub.add_parser("review", help="apri la pagina di review nel browser")
     r.add_argument("--candidates", required=True, help="path a candidates.json")
     r.add_argument("--port", type=int, default=8731)
-    r.add_argument("--timeout", type=int, default=900)
+    r.add_argument("--timeout", type=int, default=1800,
+                   help="secondi di attesa delle decisioni (default 30 minuti)")
     r.set_defaults(func=cmd_review)
 
     x = sub.add_parser("delete", help="elimina i contatti marcati (dry-run di default)")
@@ -528,7 +529,20 @@ def main():
     x.set_defaults(func=cmd_delete)
 
     args = ap.parse_args()
-    args.func(args)
+    try:
+        args.func(args)
+    except HTTPError as e:
+        if e.code in (401, 403):
+            sys.exit(f"Accesso negato dal tuo account Futuria CRM (HTTP {e.code}): il token non è "
+                     "valido o non ha i permessi per questa operazione. "
+                     "Chiedi al referente Futuria di verificarlo.")
+        sys.exit(f"Errore dal tuo account Futuria CRM (HTTP {e.code}). Riprova tra qualche minuto; "
+                 "se persiste, contatta il referente Futuria.")
+    except URLError as e:
+        sys.exit(f"Connessione al tuo account Futuria CRM non riuscita ({getattr(e, 'reason', e)}). "
+                 "Verifica la connessione internet e riprova.")
+    except KeyboardInterrupt:
+        sys.exit("Operazione interrotta.")
 
 
 if __name__ == "__main__":

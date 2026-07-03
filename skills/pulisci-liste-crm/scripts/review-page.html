@@ -161,7 +161,7 @@
           '<div class="done">Decisioni inviate.<small>L\'assistente ha ricevuto ' + del.length +
           ' contatti da eliminare e ' + keep.length + ' da tenere. Puoi chiudere questa scheda e tornare alla chat.</small></div>';
       })
-      .catch(e => alert("Errore invio: " + e));
+      .catch(() => alert("Non riesco a inviare le decisioni: probabilmente la sessione di revisione è scaduta.\nTorna in chat e chiedi all'assistente di riaprire la pagina di revisione — le tue scelte andranno rifatte, i contatti non sono stati toccati."));
   }
 
   render();

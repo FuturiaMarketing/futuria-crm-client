@@ -26,7 +26,7 @@ Script: `scripts/crm-list-cleanup.py`.
    Stampa il path di `candidates.json` (lavora in `~/.futuria/crm-cleanup/`). Con **0 candidati**: riferisci che le liste risultano pulite e fermati qui.
 2. **review** — apri la pagina nel browser per decidere (Tieni/Elimina):
    `python scripts/crm-list-cleanup.py review --candidates <candidates.json>`
-   Va lanciato in **background**: il server locale apre il browser e attende l'invio dell'utente, poi scrive `decisions.json` e stampa il path. Spiega all'utente cosa deve fare nella pagina.
+   Va lanciato in **background** (il server locale deve sopravvivere alla singola tool call): apre il browser, attende l'invio dell'utente **fino a 30 minuti**, poi scrive `decisions.json` e stampa il path. Spiega all'utente cosa deve fare nella pagina. Se l'attesa scade o la review si interrompe, **rilancia lo stesso comando**: eventuali decisioni precedenti vengono archiviate da sole, i contatti non vengono mai toccati in questa fase.
 3. **delete** — **dry-run di default**:
    `python scripts/crm-list-cleanup.py delete --decisions <decisions.json>`
    Mostra all'utente l'elenco `WOULD_DELETE`. **Solo dopo conferma esplicita in chat**, rilancia con `--execute`.
