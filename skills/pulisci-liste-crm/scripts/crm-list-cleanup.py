@@ -16,9 +16,8 @@ Fasi, sempre nell'ordine:
 La review avviene in chat: l'agente mostra i candidati coi segnali, il cliente risponde.
 Nessun server locale, nessuna pagina browser, nessun processo in background.
 
-Credenziali: SOLO variabili d'ambiente del tuo account —
-  FUTURIA_CRM_TOKEN      token di integrazione privata (inizia con pit-)
-  FUTURIA_CRM_LOCATION   identificativo del tuo account (accettato anche FUTURIA_CRM_LOCATION_ID)
+Credenziali: archivio protetto della skill Futuria CRM su Windows/macOS;
+variabili FUTURIA_CRM_TOKEN e FUTURIA_CRM_LOCATION come fallback tecnico.
 
 Sicurezza: dry-run di default, protect-list sempre attiva, snapshot completo in detect,
 decisions.json scritto solo da `decide` che accetta esclusivamente ID presenti tra i
@@ -79,9 +78,20 @@ EXOTIC_TLDS = {".top", ".xyz", ".icu", ".click", ".country", ".zip", ".tk",
 
 
 # ----------------------------------------------------------------------------
-# Credenziali (solo variabili d'ambiente — nessun file, nessun profilo)
+# Credenziali (archivio OS protetto, con fallback variabili d'ambiente)
 # ----------------------------------------------------------------------------
-def resolve_creds():
+def resolve_creds(need_location=True):
+    scripts_dir = Path(__file__).resolve().parents[2] / "futuria-crm" / "scripts"
+    if scripts_dir.exists():
+        sys.path.insert(0, str(scripts_dir))
+        try:
+            from credential_reader import CredentialError, load_credentials
+            return load_credentials(require_location=need_location)
+        except ImportError:
+            pass
+        except CredentialError as exc:
+            sys.exit(str(exc))
+
     token = (os.environ.get("FUTURIA_CRM_TOKEN") or "").strip()
     loc = (os.environ.get("FUTURIA_CRM_LOCATION")
            or os.environ.get("FUTURIA_CRM_LOCATION_ID") or "").strip()
@@ -89,7 +99,7 @@ def resolve_creds():
 
 
 def require_creds(need_location=True):
-    token, loc = resolve_creds()
+    token, loc = resolve_creds(need_location=need_location)
     missing = []
     if not token:
         missing.append("FUTURIA_CRM_TOKEN")
@@ -99,8 +109,8 @@ def require_creds(need_location=True):
         sys.exit(
             "Credenziali del tuo account Futuria CRM mancanti: "
             + ", ".join(missing)
-            + ".\nImposta le variabili d'ambiente e riavvia l'agente. "
-              "Se non hai i valori, chiedili al tuo referente Futuria."
+            + ".\nAvvia la configurazione protetta della skill Futuria CRM in una finestra "
+              "separata. Se non hai i valori, chiedili al tuo referente Futuria."
         )
     return token, loc
 
@@ -549,7 +559,7 @@ def cmd_detect(args):
     if args.protect_tags:
         protect |= {t.strip().lower() for t in args.protect_tags.split(",") if t.strip()}
 
-    sys.stderr.write(f"[detect] account {loc} token={token[:6]}…\n")
+    sys.stderr.write(f"[detect] account {loc}; PIT protetto disponibile.\n")
     contacts = fetch_all_contacts(token, loc)
     buckets = minute_buckets(contacts)
 

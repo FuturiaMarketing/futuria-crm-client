@@ -1,50 +1,112 @@
-# Getting started — connect and verify
+# Getting started — protected connection and verification
 
-How to get the agent operating on the user's Futuria CRM account. Read this once per environment, then move to the area reference for the actual task.
+Use this reference when the agent must connect the user's Futuria CRM account for the first time or diagnose missing credentials.
 
-## 1. The two credentials
+## 1. Connection model
 
-The connection to the account is two environment variables on the user's machine:
+The account uses two distinct values:
 
-| Variable | What it is | Format |
+| Value | Purpose | Secret? |
 | --- | --- | --- |
-| `FUTURIA_CRM_TOKEN` | Private integration token of the account | starts with `pit-`, ~40 chars |
-| `FUTURIA_CRM_LOCATION` | The account id (some endpoints call it `locationId`) | ~20 alphanumeric chars |
+| PIT | Authorises API requests; starts with `pit-` | Yes |
+| Account id | Identifies the user's Futuria CRM account | No |
 
-- The **token** goes in the `Authorization` header; the **account id** goes in the request parameters. Confusing the two is the most common cause of errors.
-- `FUTURIA_CRM_LOCATION_ID` is accepted as an alias by the bundled scripts, but prefer `FUTURIA_CRM_LOCATION`.
-- Never print the token in clear text. When diagnosing, show only a masked prefix (first few characters).
-- The user provides their own credentials; there are no shared credentials in this skill.
+Preferred storage:
 
-Check availability without exposing values (any shell):
+- Windows: PIT encrypted with Windows DPAPI for the current user; account id in local config.
+- macOS: PIT in macOS Keychain; account id in local config.
+- Linux or automated environments: environment variables as an explicit fallback.
 
-```bash
-python -c "import os; t=os.environ.get('FUTURIA_CRM_TOKEN',''); l=os.environ.get('FUTURIA_CRM_LOCATION',''); print('token:', (t[:6]+'...') if t else 'MANCANTE', '| account id:', 'ok' if l else 'MANCANTE')"
+Never ask the user to paste the PIT in chat, a prompt, a shell command, a file in the workspace, or an issue. Never retrieve it merely to inspect or mask it.
+
+## 2. Protected setup for a non-technical user
+
+The credential prompt must run in a **separate visible terminal window**, outside the chat capture. The user types or pastes both values there; the PIT input is hidden.
+
+Resolve the scripts relative to this skill directory.
+
+### Windows
+
+Run the launcher from the agent terminal. It opens a separate visible PowerShell window:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\launch-credential-setup.ps1"
 ```
 
-## 2. If a credential is missing — guided setup (do not dead-end)
+Status check, which never returns the PIT:
 
-The typical user is **not technical**. If a variable is missing, walk them through it in simple Italian, one step at a time:
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\setup-credentials.ps1" -Status
+```
 
-1. Explain what is missing: «Per collegarmi al tuo account Futuria CRM mi servono due codici: il token di accesso e l'ID del tuo account.»
-2. Where to get the values: **il referente Futuria Marketing li fornisce all'attivazione** (è il canale consigliato). Both values also exist in the account settings, but do not send a non-technical user hunting for them — suggest writing to Futuria instead.
-3. Set them, then **restart the agent app** so it sees the new variables:
-   - **Windows (PowerShell):** `setx FUTURIA_CRM_TOKEN "pit-..."` and `setx FUTURIA_CRM_LOCATION "..."` — then close and reopen the agent.
-   - **macOS/Linux (zsh/bash):** append `export FUTURIA_CRM_TOKEN="pit-..."` and `export FUTURIA_CRM_LOCATION="..."` to the shell profile (`~/.zshrc` or `~/.bashrc`), open a new terminal, relaunch the agent.
-4. Re-run the availability check above, then the sanity read below.
+### macOS
 
-If the user prefers, you may run the `setx`/profile commands for them — show what you are about to run and never echo the full values back in chat.
+Run the launcher from the agent terminal. It opens a separate visible Terminal window:
+
+```bash
+bash "<skill-dir>/scripts/launch-credential-setup.sh"
+```
+
+Status check:
+
+```bash
+bash "<skill-dir>/scripts/setup-credentials.sh" status
+```
+
+### Environment fallback
+
+Advanced users and non-interactive environments may provide `FUTURIA_CRM_TOKEN` plus `FUTURIA_CRM_LOCATION`. The user must set them personally outside the conversation. Do not propose a command containing their real values and do not write them into shell profiles on their behalf.
 
 ## 3. First sanity read
 
-Before a session's first write, confirm the account is reachable (base URL and headers in `references/api-and-troubleshooting.md`):
+Use the secure helper; never build a raw Authorization header in the conversation.
 
-1. `GET /locations/{FUTURIA_CRM_LOCATION}` → returns the account card (name, company data). Confirm in Italian: «Sono collegato al tuo account Futuria CRM "<nome>".»
-2. If that fails for scope reasons, fall back to one low-risk read: `POST /contacts/search` with body `{"locationId": "<account id>", "pageLimit": 1, "filters": []}`.
-3. If both fail, classify the failure with the error matrix in `references/api-and-troubleshooting.md` before changing anything. Do not assume an object is missing until the token is verified.
+Windows:
 
-## 4. Reporting
+```powershell
+& "<skill-dir>\scripts\crm-api.ps1" -Method GET -Path "/locations/{location}"
+```
 
-- Always reply in **Italian**, calling the platform **Futuria CRM**.
-- After a write, report the exact fields changed and the object's identifier, and confirm you re-read the result.
-- If wording about the platform, the account, or costs comes up, follow `references/terminology-and-voice.md`.
+macOS:
+
+```bash
+bash "<skill-dir>/scripts/crm-api.sh" GET "/locations/{location}"
+```
+
+If the account endpoint fails for scope reasons, fall back to a one-contact read:
+
+Windows:
+
+```powershell
+& "<skill-dir>\scripts\crm-api.ps1" -Method POST -Path "/contacts/search" -Body '{"locationId":"{location}","pageLimit":1,"filters":[]}'
+```
+
+macOS:
+
+```bash
+bash "<skill-dir>/scripts/crm-api.sh" POST "/contacts/search" '{"locationId":"{location}","pageLimit":1,"filters":[]}'
+```
+
+Confirm in Italian only the account name and the successful connection. If both reads fail, classify the HTTP response with `references/api-and-troubleshooting.md` before changing credentials.
+
+## 4. Removing local credentials
+
+Windows:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\setup-credentials.ps1" -Remove
+```
+
+macOS:
+
+```bash
+bash "<skill-dir>/scripts/setup-credentials.sh" remove
+```
+
+This removes only the local copy. Revoking the PIT itself is a separate action in the user's Futuria CRM account.
+
+## 5. Reporting
+
+- Always reply in Italian and call the platform Futuria CRM.
+- Report whether protected credentials are present; never report their value or prefix.
+- After a write, report the exact fields changed, the object identifier, and the verification surface.
