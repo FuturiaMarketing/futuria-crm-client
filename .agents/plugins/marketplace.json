@@ -1,0 +1,20 @@
+{
+  "name": "futuria-crm",
+  "interface": {
+    "displayName": "Futuria CRM"
+  },
+  "plugins": [
+    {
+      "name": "futuria-crm",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

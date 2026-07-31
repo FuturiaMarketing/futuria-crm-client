@@ -24,7 +24,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 ERRORS = []
 
-TEXT_EXT = {".md", ".json", ".yaml", ".yml", ".py", ".html", ".txt"}
+TEXT_EXT = {".md", ".json", ".yaml", ".yml", ".py", ".ps1", ".sh", ".html", ".txt"}
 SKIP_DIRS = {".git", ".github", "node_modules", "__pycache__"}
 SELF = Path(__file__).resolve()
 
@@ -38,6 +38,8 @@ BRAND_ALLOW = {"skills/futuria-crm/references/terminology-and-voice.md"}
 HOST_PAT = re.compile("lead" + "connector", re.IGNORECASE)
 HOST_ALLOW = BRAND_ALLOW | {
     "skills/futuria-crm/references/api-and-troubleshooting.md",
+    "skills/futuria-crm/scripts/crm-api.ps1",
+    "skills/futuria-crm/scripts/crm-api.sh",
     "skills/pulisci-liste-crm/scripts/crm-list-cleanup.py",
 }
 
@@ -77,6 +79,79 @@ def check_json():
             json.loads(p.read_text(encoding="utf-8"))
         except Exception as e:  # noqa: BLE001
             ERRORS.append(f"[json]  {rel(p)} non valido: {e}")
+
+
+def check_packaging():
+    required = [
+        ROOT / ".claude-plugin" / "plugin.json",
+        ROOT / ".claude-plugin" / "marketplace.json",
+        ROOT / ".codex-plugin" / "plugin.json",
+        ROOT / ".agents" / "plugins" / "marketplace.json",
+        ROOT / "INSTALL.md",
+        ROOT / "PRIVACY.md",
+        ROOT / "SECURITY.md",
+    ]
+    for path in required:
+        if not path.exists():
+            ERRORS.append(f"[pack]  manca {rel(path)}")
+    if any(not p.exists() for p in required[:3]):
+        return
+
+    claude = json.loads(required[0].read_text(encoding="utf-8"))
+    claude_market = json.loads(required[1].read_text(encoding="utf-8"))
+    codex = json.loads(required[2].read_text(encoding="utf-8"))
+    market_plugins = claude_market.get("plugins") or []
+    market_version = market_plugins[0].get("version") if market_plugins else None
+    versions = {claude.get("version"), codex.get("version"), market_version}
+    if len(versions) != 1 or None in versions:
+        ERRORS.append(f"[pack]  versioni divergenti: Claude={claude.get('version')}, "
+                      f"Codex={codex.get('version')}, marketplace={market_version}")
+    if claude.get("name") != "futuria-crm" or codex.get("name") != "futuria-crm":
+        ERRORS.append("[pack]  il nome plugin deve essere futuria-crm in entrambi i runtime")
+
+    privacy_url = (codex.get("interface") or {}).get("privacyPolicyURL", "")
+    if not privacy_url.endswith("/PRIVACY.md"):
+        ERRORS.append("[pack]  privacyPolicyURL Codex mancante o non canonico")
+
+
+def check_credential_contract():
+    distributed_docs = [ROOT / "README.md", ROOT / "INSTALL.md"]
+    unsafe = [
+        re.compile(r"\bsetx\s+FUTURIA_CRM_TOKEN", re.IGNORECASE),
+        re.compile(r"\bexport\s+FUTURIA_CRM_TOKEN\s*=", re.IGNORECASE),
+        re.compile(r"i dati (?:del tuo account )?viaggiano solo", re.IGNORECASE),
+    ]
+    for path in distributed_docs:
+        if not path.exists():
+            continue
+        text = path.read_text(encoding="utf-8", errors="replace")
+        for pattern in unsafe:
+            if pattern.search(text):
+                ERRORS.append(f"[cred]  {rel(path)} contiene onboarding o promessa privacy non sicuri")
+
+    scripts = [
+        ROOT / "skills" / "futuria-crm" / "scripts" / "setup-credentials.ps1",
+        ROOT / "skills" / "futuria-crm" / "scripts" / "setup-credentials.sh",
+        ROOT / "skills" / "futuria-crm" / "scripts" / "crm-api.ps1",
+        ROOT / "skills" / "futuria-crm" / "scripts" / "crm-api.sh",
+        ROOT / "skills" / "futuria-crm" / "scripts" / "credential_reader.py",
+        ROOT / "skills" / "futuria-crm" / "scripts" / "launch-credential-setup.ps1",
+        ROOT / "skills" / "futuria-crm" / "scripts" / "launch-credential-setup.sh",
+    ]
+    for path in scripts:
+        if not path.exists():
+            ERRORS.append(f"[cred]  helper credenziali mancante: {rel(path)}")
+
+    mac_setup = scripts[1]
+    mac_api = scripts[3]
+    if mac_setup.exists():
+        text = mac_setup.read_text(encoding="utf-8", errors="replace")
+        if re.search(r"-w\s+[\"']?\$\{?pit\b", text, re.IGNORECASE):
+            ERRORS.append("[cred]  setup macOS passa il PIT come argomento di processo")
+    if mac_api.exists():
+        text = mac_api.read_text(encoding="utf-8", errors="replace")
+        if "${1^^}" in text:
+            ERRORS.append("[compat] crm-api.sh usa sintassi non supportata da Bash 3 di macOS")
 
 
 def parse_frontmatter(text):
@@ -144,6 +219,8 @@ def check_placeholders():
 def main():
     check_branding()
     check_json()
+    check_packaging()
+    check_credential_contract()
     check_skills()
     check_reference_paths()
     check_placeholders()

@@ -9,11 +9,29 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Compila lo script di pulizia liste
-        run: python -m py_compile skills/pulisci-liste-crm/scripts/crm-list-cleanup.py
+        run: python -m py_compile skills/pulisci-liste-crm/scripts/crm-list-cleanup.py skills/futuria-crm/scripts/credential_reader.py
+      - name: Test credenziali cross-platform
+        run: python -m unittest discover -s tests -v
+      - name: Valida script macOS
+        run: bash -n skills/futuria-crm/scripts/setup-credentials.sh skills/futuria-crm/scripts/launch-credential-setup.sh skills/futuria-crm/scripts/crm-api.sh
+      - name: Valida script PowerShell
+        shell: pwsh
+        run: |
+          $failed = $false
+          foreach ($file in @('skills/futuria-crm/scripts/setup-credentials.ps1', 'skills/futuria-crm/scripts/launch-credential-setup.ps1', 'skills/futuria-crm/scripts/crm-api.ps1')) {
+            $tokens = $null
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($file, [ref]$tokens, [ref]$errors) | Out-Null
+            if ($errors.Count -gt 0) {
+              $errors | ForEach-Object { Write-Error "${file}: $($_.Message)" }
+              $failed = $true
+            }
+          }
+          if ($failed) { exit 1 }
       - name: Valida plugin (white-label, JSON, skill, reference)
         run: python scripts/validate-plugin.py

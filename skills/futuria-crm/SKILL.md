@@ -1,6 +1,6 @@
 ---
 name: futuria-crm
-description: Use when the task involves Futuria CRM, the all-in-one CRM, marketing and commerce platform. Trigger for requests about contacts, conversations and messages, opportunities and pipelines, appointments and calendars, tasks, tags, email templates, social posts, blog posts, payments and orders, automations, account credits and wallet, or access and authentication issues. Operate the user account API-first — the Futuria CRM direct API with the credentials in FUTURIA_CRM_TOKEN and FUTURIA_CRM_LOCATION, web interface only as fallback — and always reply in Italian, always calling the platform Futuria CRM.
+description: Use when the task involves Futuria CRM, the all-in-one CRM, marketing and commerce platform. Trigger for requests about contacts, conversations and messages, opportunities and pipelines, appointments and calendars, tasks, tags, email templates, social posts, blog posts, payments and orders, automations, account credits and wallet, or access and authentication issues. Operate the user account API-first with the bundled secure credential and API helpers, web interface only as fallback, and always reply in Italian, always calling the platform Futuria CRM.
 ---
 
 # Futuria CRM
@@ -24,20 +24,21 @@ When in doubt about wording, load `references/terminology-and-voice.md`. It carr
 ## 2. Single-account model, API-first
 
 - The user has **one** Futuria CRM account. There is no agency view and no multi-account switching.
-- Two environment variables connect the agent to that account:
-  - **`FUTURIA_CRM_TOKEN`** — the account's private integration token (starts with `pit-`). Goes in the auth header of every request.
-  - **`FUTURIA_CRM_LOCATION`** — the account id, a separate identifier most endpoints require as a parameter. Never confuse the token with the account id.
+- Two values connect the agent to that account: the PIT and the account id. Never confuse them.
+- **Preferred credential storage:** Windows DPAPI or macOS Keychain, configured with the bundled scripts. Environment variables `FUTURIA_CRM_TOKEN` and `FUTURIA_CRM_LOCATION` are supported only as a technical fallback.
+- Never ask the user to paste the PIT in chat, a prompt, or a command. If setup is required, open a separate visible terminal window and follow `references/getting-started.md`.
 - Capability priority for every task:
-  1. **Direct API** — the canonical channel. Endpoint families, headers, pagination and the error matrix are in `references/api-and-troubleshooting.md`; per-area endpoints are in each area reference. All endpoints there are validated.
+  1. **Direct API through the bundled helper** — the canonical channel. Use `scripts/crm-api.ps1` on Windows or `scripts/crm-api.sh` on macOS so the PIT never enters the model-visible command. Endpoint families, pagination and the error matrix are in `references/api-and-troubleshooting.md`; per-area endpoints are in each area reference.
   2. **Web interface** — only for builder-only internals the API does not expose, or to visually confirm something for the user.
-  - If the session also exposes ready-made Futuria CRM tools (for example through a connector), you may use them for convenient reads — but the API remains the source of truth, especially for writes and verification.
-- If one or both environment variables are missing, do not dead-end: guide the user through setup in plain Italian — see `references/getting-started.md`.
+- The initial release does not install or require an MCP connector. If a future chat edition exposes Futuria CRM tools, follow that edition's own connection contract instead of mixing the two channels.
+- If credentials are missing, do not dead-end: guide the user through protected setup in plain Italian — see `references/getting-started.md`.
 
 ## 3. Fast start
 
-1. Identify the area and load the matching reference (see the map below). Load only what you need.
-2. Validate context minimally: if the account already responded in this session, do one read sanity check instead of a full diagnostic.
-3. For writes: read current state → apply the smallest change → re-read through the canonical surface → report exactly what changed, in Italian.
+1. Identify the area and load the matching reference. Load only what you need.
+2. Confirm protected credentials are available without retrieving or printing the PIT.
+3. Validate context minimally: if the account has not responded in this session, do one read sanity check through the bundled API helper.
+4. For writes: read current state → apply the smallest change → re-read through the canonical surface → report exactly what changed, in Italian.
 
 ## 4. Write safety
 
@@ -49,15 +50,15 @@ Before any write (create / update / delete / archive):
 4. Report the exact fields changed and object identifiers, in Italian.
 5. For destructive actions (delete / replace / disable), confirm intent with the user first and keep rollback context.
 
-Never print the access token in clear text; show only a masked prefix when diagnosing.
+Never retrieve, print, echo, mask, summarize, or include the PIT in a tool argument. Diagnose only its availability and the resulting HTTP class.
 
 ## 5. Reference map
 
 Load per area:
 
 - `references/terminology-and-voice.md` — the brand law in full, substitution table, client-facing language, wallet/credit model, do/don't examples. **Read this whenever wording matters.**
-- `references/getting-started.md` — environment variables, guided setup for non-technical users, first sanity read.
-- `references/api-and-troubleshooting.md` — base URL, headers, parameter conventions per endpoint family, pagination, rate limits, error matrix. **The technical foundation for every API call.**
+- `references/getting-started.md` — protected Windows/macOS setup, environment fallback, first sanity read.
+- `references/api-and-troubleshooting.md` — secure API helpers, parameter conventions per endpoint family, pagination, rate limits, error matrix. **The technical foundation for every API call.**
 - `references/contacts-tags-tasks.md` — contacts (search/create/update/upsert/delete), tags, contact tasks and notes, custom fields.
 - `references/contacts-pulizia-liste.md` — pulizia liste: riconoscere ed eliminare spam/fake (skill `pulisci-liste-crm`).
 - `references/conversations-messaging.md` — search conversations, read and send messages.

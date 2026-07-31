@@ -10,12 +10,13 @@
     {
       "name": "futuria-crm",
       "source": "./",
-      "description": "Assistente Futuria CRM: gestisci contatti, conversazioni, opportunità, appuntamenti, contenuti, pagamenti e pulizia liste del tuo account Futuria CRM, direttamente via API con le tue credenziali.",
+      "description": "Assistente Futuria CRM per Codex e Claude Code: gestisci contatti, conversazioni, opportunità, appuntamenti, contenuti, pagamenti e pulizia liste direttamente via API con il PIT protetto dal sistema operativo.",
       "author": {
         "name": "Futuria Marketing"
       },
       "category": "productivity",
-      "homepage": "https://futuriamarketing.com"
+      "homepage": "https://futuriamarketing.com",
+      "version": "1.1.0"
     }
   ]
 }

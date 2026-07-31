@@ -1,99 +1,68 @@
-# Futuria CRM — assistente per agenti AI
+# Futuria CRM — skill per agenti AI
 
-Skill ufficiale **Futuria Marketing** che permette al tuo agente AI di operare direttamente sul tuo account **Futuria CRM**: contatti, conversazioni e messaggi, opportunità e pipeline, appuntamenti, task, tag, email, social, blog, pagamenti e pulizia delle liste contatti.
+Plugin ufficiale **Futuria Marketing** per collegare Codex o Claude Code al proprio account **Futuria CRM** tramite PIT e API diretta.
 
-Funziona con Claude Code e con agenti compatibili (Codex). L'agente si collega al tuo account con le tue credenziali, lavora direttamente sulle API di Futuria CRM e risponde sempre in italiano.
+La prima versione è volutamente locale e semplice:
 
-## Cosa fa
+- funziona con **Codex** e **Claude Code**;
+- usa un solo account Futuria CRM;
+- non installa e non richiede alcun connettore MCP;
+- conserva il PIT nel portachiavi del sistema operativo, non nella chat;
+- risponde sempre in italiano e chiama la piattaforma sempre **Futuria CRM**.
 
-- **Contatti & tag** — crea, aggiorna, cerca contatti; gestisce i tag; evita i duplicati.
-- **Conversazioni** — legge la cronologia e prepara/invia messaggi (con la tua conferma).
-- **Opportunità & pipeline** — sposta gli affari tra gli stage, aggiorna valore e stato.
-- **Appuntamenti** — consulta calendari, appuntamenti e note.
-- **Contenuti** — template email, post social programmati, articoli del blog.
-- **Pagamenti** — consulta ordini e transazioni (sola lettura).
-- **Pulizia liste** — trova contatti spam/fake, te li mostra in chat per la revisione (o in una checklist Excel se sono tanti), elimina solo quelli che confermi (prima fa sempre una prova a vuoto).
+## Il testo da incollare al proprio agente
 
-## Installazione
+Copia questo testo in una chat nuova di Codex o Claude Code:
 
-### 1. Aggiungi il marketplace e installa il plugin
-
-In Claude Code:
-
-```
-/plugin marketplace add FuturiaMarketing/futuria-crm-client
-/plugin install futuria-crm@futuria-crm
-```
-
-> Se hai ricevuto il plugin come cartella locale, usa il percorso della cartella al posto del repository.
-
-### 2. Imposta le credenziali del tuo account
-
-Il plugin si collega al tuo account Futuria CRM con **due** variabili d'ambiente:
-
-| Variabile | Cos'è |
-| --- | --- |
-| `FUTURIA_CRM_TOKEN` | Il token di accesso del tuo account (inizia con `pit-`) |
-| `FUTURIA_CRM_LOCATION` | L'ID del tuo account |
-
-Entrambi i valori te li fornisce **il tuo referente Futuria Marketing** all'attivazione. Se non li hai, scrivici: te li configuriamo noi.
-
-Impostale così, poi **riavvia l'agente**:
-
-```powershell
-# Windows (PowerShell)
-setx FUTURIA_CRM_TOKEN "pit-il-tuo-token"
-setx FUTURIA_CRM_LOCATION "id-del-tuo-account"
+```text
+Installa la release stabile della skill Futuria CRM dal repository pubblico
+https://github.com/FuturiaMarketing/futuria-crm-client seguendo INSTALL.md.
+Rileva autonomamente se sei Codex o Claude Code e usa il percorso previsto per
+quel runtime. Non chiedermi mai di incollare il PIT in chat o in un comando:
+dopo l'installazione apri una finestra Terminale separata e visibile, avvia la
+configurazione protetta inclusa nella skill e lascia che inserisca lì PIT e ID
+account. Poi verifica la connessione in sola lettura e comunicami soltanto il
+nome dell'account collegato e l'esito.
 ```
 
-```bash
-# macOS / Linux (aggiungi al tuo ~/.zshrc o ~/.bashrc)
-export FUTURIA_CRM_TOKEN="pit-il-tuo-token"
-export FUTURIA_CRM_LOCATION="id-del-tuo-account"
-```
+L’agente seguirà la procedura dettagliata in [INSTALL.md](INSTALL.md). Non serve usare `winget` o Homebrew per installare la skill. Python è necessario soltanto per la funzione opzionale **Pulisci liste**; se manca, l’agente deve chiedere conferma prima di installarlo.
 
-> Non sai farlo? Chiedi direttamente all'agente: «aiutami a configurare Futuria CRM» — ti guida passo passo.
+## Cosa può fare
 
-### 3. Usa l'assistente
+- **Contatti, note, task e tag** — cerca, crea e aggiorna, evitando i duplicati.
+- **Conversazioni** — legge la cronologia e prepara o invia messaggi dopo conferma.
+- **Opportunità e pipeline** — consulta e aggiorna trattative, valore, stato e fase.
+- **Appuntamenti** — consulta calendari, eventi e note.
+- **Contenuti** — lavora su template email, post social e articoli del blog.
+- **Pagamenti** — consulta ordini e transazioni in sola lettura.
+- **Pulizia liste** — individua profili chiaramente fasulli, li sottopone alla revisione dell’utente e procede solo dopo dry-run e conferma esplicita.
 
-Chiedi in linguaggio naturale, ad esempio:
+## Come protegge il PIT
 
-- «Crea un contatto per Maria Bianchi, mail maria@example.com, e mettile il tag cliente-2026.»
-- «Com'è messa la pipeline Vendite questo mese?»
-- «Prepara una risposta WhatsApp a Luca Verdi per confermare l'appuntamento di giovedì.»
+- **Windows:** inserimento nascosto in una finestra PowerShell; il PIT viene cifrato con la protezione dati dell’utente Windows.
+- **macOS:** inserimento nascosto in Terminale; il PIT viene salvato nel Portachiavi di macOS.
+- Le variabili d’ambiente restano disponibili come fallback per utenti tecnici e ambienti automatizzati, ma non sono il percorso consigliato.
+- Il PIT non deve mai essere incollato nella chat, inserito in un prompt o passato come argomento di un comando.
+
+Gli script API inclusi recuperano il PIT internamente e non lo stampano. Dettagli e limiti sono descritti in [PRIVACY.md](PRIVACY.md) e [SECURITY.md](SECURITY.md).
+
+## Uso
+
+Dopo l’installazione e la configurazione basta chiedere, per esempio:
+
+- «Crea un contatto per Maria Bianchi e aggiungi il tag cliente-2026.»
+- «Com’è messa la pipeline Vendite questo mese?»
+- «Prepara una risposta WhatsApp a Luca per confermare l’appuntamento.»
 - «Pulisci le liste contatti dallo spam.»
-- «Spiegami come funzionano i crediti del mio account.»
 
-Oppure invoca i comandi dedicati:
+Codex può richiamare esplicitamente `$futuria-crm` o `$pulisci-liste-crm`. In Claude Code le skill del plugin sono disponibili anche tramite i comandi con namespace del plugin; normalmente non serve invocarli, perché l’agente riconosce le richieste dal linguaggio naturale.
 
-```
-/futuria-crm  <la tua richiesta>
-/pulisci-liste-crm
-```
+## Privacy essenziale
 
-## Pulizia liste: come funziona
+I dati letti dal CRM vengono elaborati dall’agente AI scelto dall’utente. Possono quindi essere trattati anche dal relativo fornitore AI, secondo piano, impostazioni e contratto dell’utente. La skill non invia telemetria propria a Futuria Marketing e nella v1 non usa un server MCP Futuria.
 
-1. L'agente analizza i tuoi contatti e individua solo i profili **chiaramente** fasulli (domini email usa-e-getta, testi scam, profili senza alcuna identità). Clienti, partner e contatti con ordini o trattative sono sempre protetti.
-2. L'agente ti mostra i candidati direttamente in chat, contatto per contatto, con i motivi del sospetto: decidi tu, **tieni** o **elimina**, rispondendo a parole tue. Se i candidati sono tanti ti prepara una checklist Excel con un menu a tendina per riga: la compili, la salvi e torni in chat.
-3. L'agente fa prima una **prova a vuoto** e ti mostra l'elenco; elimina solo dopo la tua conferma, tenendo una copia di sicurezza di ogni contatto rimosso.
-
-## Privacy & sicurezza
-
-- Le tue credenziali restano **solo** sulla tua macchina, nelle variabili d'ambiente: non sono incluse nel plugin e non vengono condivise.
-- L'assistente non stampa mai il token in chiaro.
-- I dati del tuo account viaggiano solo tra la tua macchina e Futuria CRM.
-- Le azioni verso l'esterno (invio messaggi, pubblicazione contenuti) vengono confermate con te prima dell'esecuzione.
-- L'assistente non muove denaro: sui pagamenti lavora in sola lettura.
-- Le eliminazioni di contatti passano sempre da: tua revisione (in chat o nella checklist) → prova a vuoto → tua conferma esplicita.
-
-## Aggiornamenti
-
-Quando pubblichiamo una nuova versione, aggiorna il plugin dal marketplace (`/plugin` → aggiorna `futuria-crm`).
-
-## Supporto
-
-Per attivazione, credenziali o domande sull'account: **il tuo referente Futuria Marketing** — https://futuriamarketing.com
+Per attivazione, PIT, revoca o supporto: il proprio referente Futuria Marketing — <https://futuriamarketing.com>.
 
 ---
 
-© Futuria Marketing. Futuria CRM è la piattaforma CRM, marketing e commerce di Futuria Marketing.
+© Futuria Marketing. Tutti i diritti riservati.

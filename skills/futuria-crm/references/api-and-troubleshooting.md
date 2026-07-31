@@ -2,25 +2,28 @@
 
 The direct API is the **primary channel** for operating the user's Futuria CRM account. This file carries the request foundation shared by every area reference, plus the error matrix.
 
-> **Technical-host note.** This is the **only** reference where the platform's underlying technical host name may appear, because it is part of real endpoint URLs and error payloads. It is infrastructure, not a brand: **never surface the host name to the user, and never use it as the name of the platform.** To the user, everything here is **Futuria CRM**. See `references/terminology-and-voice.md`.
+> **Technical-host note.** The platform's underlying technical host may appear only in this reference and in the bundled API helpers, because it is part of real endpoint URLs and error payloads. It is infrastructure, not a brand: **never surface the host name to the user, and never use it as the name of the platform.** To the user, everything here is **Futuria CRM**. See `references/terminology-and-voice.md`.
 
-## Base request rules
+## Secure request rules
 
 - Base URL: `https://services.leadconnectorhq.com` — every path in the area references is relative to it.
-- Required headers on every request:
-  - `Authorization: Bearer <FUTURIA_CRM_TOKEN>`
-  - `Version: 2021-07-28`
-  - `Accept: application/json`
-- Add `Content-Type: application/json` for JSON writes.
-- Never log or print the full token. Mask it.
+- Use the bundled helper for every API request. It loads the PIT internally from Windows DPAPI, macOS Keychain, or the environment fallback, and accepts only relative paths on the fixed Futuria CRM API host.
+- The helper adds the Authorization, Version and Accept headers. It adds the JSON content type on writes. It defaults to the validated V2 date header used by the endpoint tables; pass `-Version v3` on Windows or set `FUTURIA_CRM_API_VERSION=v3` on macOS only for an endpoint whose reference explicitly requires V3.
+- Never construct or display a raw Authorization header in the conversation.
 
-Template (works in every shell; on Windows use `curl.exe`):
+Windows:
+
+```powershell
+& "<skill-dir>\scripts\crm-api.ps1" -Method GET -Path "/locations/{location}"
+```
+
+macOS:
 
 ```bash
-curl -s -H "Authorization: Bearer $FUTURIA_CRM_TOKEN" \
-     -H "Version: 2021-07-28" -H "Accept: application/json" \
-     "https://services.leadconnectorhq.com/locations/$FUTURIA_CRM_LOCATION"
+bash "<skill-dir>/scripts/crm-api.sh" GET "/locations/{location}"
 ```
+
+Use `{location}` wherever an endpoint requires the account id; the helper replaces it without exposing the PIT. On Windows use `-Body` or `-BodyFile` for JSON. On macOS pass a small JSON body as the third argument.
 
 ## Parameter conventions per endpoint family (validated)
 
@@ -49,23 +52,18 @@ Other validated quirks:
 - **Payments:** `limit` + `offset`, response has `totalCount`.
 - Insert a short pause (~100–150 ms) between pages on bulk reads: the API enforces burst rate limits.
 
-## Token & account diagnostics
+## Credential and account diagnostics
 
-1. Validate token format: `pit-` prefix, plausible length, no stray spaces.
-2. Confirm you are passing the **token** in the auth header and the **account id** (not the token) where an endpoint requires it.
-3. Probe one low-risk read (`GET /locations/{account id}`, else `POST /contacts/search` with `pageLimit` 1) and classify the result before changing credentials or code.
-
-Mask-safe token check:
-
-```bash
-python -c "import os; t=os.environ.get('FUTURIA_CRM_TOKEN',''); print('TOKEN_PREFIX=' + t[:6], 'TOKEN_LENGTH=%d' % len(t))"
-```
+1. Run the protected setup script with `-Status` on Windows or `status` on macOS. It reports only presence or absence.
+2. Confirm that the account id is separate from the PIT and is passed where the endpoint family requires it.
+3. Probe one low-risk read (`GET /locations/{location}`, else `POST /contacts/search` with `pageLimit` 1) through the helper and classify the result before changing credentials or code.
+4. Do not retrieve the PIT for visual inspection, even in masked form.
 
 ## Error matrix
 
 ### 401 Unauthorized
 - Token invalid, expired, revoked, or wrong scope.
-- Confirm the header is exactly `Bearer <token>`.
+- Confirm the helper is using the expected protected credential source.
 - Do not assume the requested object is missing until the token is verified.
 - User-facing: "errore di autorizzazione sul tuo account Futuria CRM" — never name the host.
 
