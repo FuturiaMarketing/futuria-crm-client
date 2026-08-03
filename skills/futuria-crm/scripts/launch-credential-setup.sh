@@ -2,12 +2,20 @@
 set -euo pipefail
 
 if [[ "$(uname -s)" != "Darwin" ]]; then
-  echo "Questo launcher apre una finestra Terminale su macOS." >&2
+  echo "Questo launcher avvia il configuratore protetto su macOS." >&2
   exit 2
 fi
 
 script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+wizard_script="${script_dir}/credential-wizard.mjs"
 setup_script="${script_dir}/setup-credentials.sh"
+
+if [[ -f "${wizard_script}" ]] && command -v node >/dev/null 2>&1; then
+  nohup node "${wizard_script}" >/dev/null 2>&1 &
+  echo "Configuratore grafico Futuria CRM aperto nel browser."
+  exit 0
+fi
+
 if [[ ! -f "${setup_script}" ]]; then
   echo "Script di configurazione Futuria CRM non trovato." >&2
   exit 2
@@ -24,4 +32,4 @@ osascript \
   -e "do script \"${apple_command}\"" \
   -e 'end tell' >/dev/null
 
-echo "Finestra Terminale protetta aperta. Attendi che l'utente completi la configurazione."
+echo "Node.js non è disponibile: aperta la configurazione protetta in Terminale."

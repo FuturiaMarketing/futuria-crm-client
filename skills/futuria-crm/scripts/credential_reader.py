@@ -6,12 +6,25 @@ from __future__ import annotations
 import json
 import os
 import platform
+import re
 import subprocess
 from pathlib import Path
 
 
 class CredentialError(RuntimeError):
     pass
+
+
+TOKEN_RE = re.compile(r"^pit-[A-Za-z0-9._-]{6,2048}$")
+LOCATION_RE = re.compile(r"^[A-Za-z0-9_-]{6,128}$")
+
+
+def _windows_powershell_environment() -> dict[str, str]:
+    environment = os.environ.copy()
+    for key in tuple(environment):
+        if key.casefold() == "psmodulepath":
+            environment.pop(key, None)
+    return environment
 
 
 def _config_path() -> Path:
@@ -54,9 +67,10 @@ def _read_windows_token() -> str:
         capture_output=True,
         text=True,
         check=False,
+        env=_windows_powershell_environment(),
     )
     if result.returncode != 0:
-        raise CredentialError("Il PIT protetto di Windows non è leggibile dall'utente corrente.")
+        raise CredentialError("La chiave privata protetta di Windows non è leggibile dall'utente corrente.")
     return result.stdout.strip()
 
 
@@ -85,14 +99,16 @@ def load_credentials(require_location: bool = True) -> tuple[str, str]:
     location = _read_location()
     missing = []
     if not token:
-        missing.append("PIT")
+        missing.append("chiave privata")
     if require_location and not location:
         missing.append("ID account")
     if missing:
         raise CredentialError(
             "Configurazione Futuria CRM mancante: " + ", ".join(missing)
-            + ". Avvia lo script di configurazione protetta in una finestra separata."
+            + ". Avvia il configuratore protetto."
         )
-    if token and not token.startswith("pit-"):
-        raise CredentialError("Il PIT configurato non ha il formato atteso.")
+    if token and not TOKEN_RE.fullmatch(token):
+        raise CredentialError("La chiave privata configurata non ha il formato atteso.")
+    if location and not LOCATION_RE.fullmatch(location):
+        raise CredentialError("L'ID account configurato non ha il formato atteso.")
     return token, location

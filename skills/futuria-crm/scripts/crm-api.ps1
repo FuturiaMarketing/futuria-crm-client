@@ -35,8 +35,8 @@ if (-not $token -and (Test-Path -LiteralPath $credentialPath)) {
 if (-not $token -or -not $location) {
     throw "Credenziali Futuria CRM mancanti. Esegui prima setup-credentials.ps1 in una finestra separata."
 }
-if (-not $token.StartsWith("pit-")) {
-    throw "Il PIT configurato non ha il formato atteso."
+if ($token -notmatch '^pit-[A-Za-z0-9._-]{6,2048}$') {
+    throw "La chiave privata configurata non ha il formato atteso."
 }
 if ([string]$location -notmatch '^[A-Za-z0-9_-]{6,128}$') {
     throw "L'ID account configurato non ha il formato atteso."

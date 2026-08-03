@@ -8,40 +8,34 @@ The account uses two distinct values:
 
 | Value | Purpose | Secret? |
 | --- | --- | --- |
-| PIT | Authorises API requests; starts with `pit-` | Yes |
+| Private Integration Token (PIT), shown as **private connection key** | Authorises API requests; starts with `pit-` | Yes |
 | Account id | Identifies the user's Futuria CRM account | No |
 
 Preferred storage:
 
-- Windows: PIT encrypted with Windows DPAPI for the current user; account id in local config.
-- macOS: PIT in macOS Keychain; account id in local config.
+- Windows: private key encrypted with Windows DPAPI for the current user; account id in local config.
+- macOS: private key in macOS Keychain; account id in local config.
 - Linux or automated environments: environment variables as an explicit fallback.
 
-Never ask the user to paste the PIT in chat, a prompt, a shell command, a file in the workspace, or an issue. Never retrieve it merely to inspect or mask it.
+Never ask the user to paste the private key in chat, a prompt, a shell command, a file in the workspace, or an issue. Never retrieve it merely to inspect or mask it.
 
-## 2. Protected setup for a non-technical user
+## 2. Guided setup for a non-technical user
 
-The credential prompt must run in a **separate visible terminal window**, outside the chat capture. The user types or pastes both values there; the PIT input is hidden.
-
-Resolve the scripts relative to this skill directory.
+Resolve the launcher relative to this skill directory. It opens a temporary graphical configurator on `127.0.0.1`, outside the chat capture. The configurator contains a three-step visual guide, accepts the Futuria CRM account URL, verifies the connection read-only and stores the private key with the operating system.
 
 ### Windows
-
-Run the launcher from the agent terminal. It opens a separate visible PowerShell window:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\launch-credential-setup.ps1"
 ```
 
-Status check, which never returns the PIT:
+Status check, which never returns the private key:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\setup-credentials.ps1" -Status
 ```
 
 ### macOS
-
-Run the launcher from the agent terminal. It opens a separate visible Terminal window:
 
 ```bash
 bash "<skill-dir>/scripts/launch-credential-setup.sh"
@@ -52,6 +46,12 @@ Status check:
 ```bash
 bash "<skill-dir>/scripts/setup-credentials.sh" status
 ```
+
+### Automatic fallback
+
+If Node.js is unavailable, the launcher opens the protected native prompt in a separate PowerShell or Terminal window. The secret input remains hidden and does not enter the agent-visible command.
+
+Do not install Node.js solely for this wizard without informing the user first.
 
 ### Environment fallback
 
@@ -103,10 +103,15 @@ macOS:
 bash "<skill-dir>/scripts/setup-credentials.sh" remove
 ```
 
-This removes only the local copy. Revoking the PIT itself is a separate action in the user's Futuria CRM account.
+This removes only the local copy. Revoking the private key itself is a separate action in the user's Futuria CRM account.
 
-## 5. Reporting
+## 5. Version check
+
+Read the installed version from `<skill-dir>/VERSION`. Before a new setup, or when the user asks about updates, compare it with the latest stable GitHub Release. Inform the user when an update exists; do not silently overwrite an installed copy or discard local changes.
+
+## 6. Reporting
 
 - Always reply in Italian and call the platform Futuria CRM.
 - Report whether protected credentials are present; never report their value or prefix.
+- Report the installed version from `VERSION`.
 - After a write, report the exact fields changed, the object identifier, and the verification surface.

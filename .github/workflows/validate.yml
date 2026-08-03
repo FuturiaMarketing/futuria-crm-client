@@ -35,3 +35,18 @@ jobs:
           if ($failed) { exit 1 }
       - name: Valida plugin (white-label, JSON, skill, reference)
         run: python scripts/validate-plugin.py
+
+  credential-wizard:
+    name: credential-wizard (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Test configuratore locale
+        run: node --test tests/credential-wizard.test.mjs

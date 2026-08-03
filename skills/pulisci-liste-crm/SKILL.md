@@ -15,7 +15,7 @@ The typical client is **non-technical**: you run every command; the client only 
 Detection heuristics: `../futuria-crm/references/contacts-pulizia-liste.md` (from the plugin root: `skills/futuria-crm/references/contacts-pulizia-liste.md`).
 
 ## Prerequisites
-- Protected credentials configured by the main Futuria CRM skill on Windows or macOS; environment variables remain a technical fallback. The PIT must be able to read and delete contacts. If missing, guide the client through `../futuria-crm/references/getting-started.md` — never ask for the PIT in chat.
+- Protected credentials configured by the main Futuria CRM skill on Windows or macOS; environment variables remain a technical fallback. The private connection key must be able to read and delete contacts. If missing, guide the client through `../futuria-crm/references/getting-started.md` — never ask for it in chat.
 - Python 3 (stdlib only, no dependencies — the Excel checklist included). `python3` on macOS, `python` on Windows.
 
 ## The flow

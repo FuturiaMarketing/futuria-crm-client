@@ -5,23 +5,23 @@ Questa procedura è destinata all’agente AI che riceve il link del repository.
 ## Obiettivo
 
 1. Identificare se il runtime corrente è **Codex** o **Claude Code**.
-2. Installare la release stabile del plugin/skill Futuria CRM.
-3. Aprire un terminale separato e visibile per l’inserimento protetto di PIT e ID account.
-4. Eseguire una verifica in sola lettura senza mostrare il PIT.
+2. Installare la release stabile del pacchetto Futuria CRM.
+3. Aprire il configuratore grafico locale per il collegamento protetto.
+4. Eseguire una verifica in sola lettura e comunicare soltanto nome account, versione ed esito.
 
-La v1 usa **PIT + API diretta**. Non installare né configurare MCP.
+Il collegamento usa API diretta e una credenziale chiamata **Private Integration Token (PIT)**. Nel configuratore viene indicata come **chiave privata di collegamento**. Questa release non installa né configura MCP.
 
 ## Regole di sicurezza
 
-- Non chiedere mai all’utente di scrivere il PIT nella chat.
-- Non inserire mai il PIT in un comando, un argomento CLI, un file del progetto o un log.
-- Non eseguire una configurazione credenziali in un terminale catturato nella conversazione: aprire una finestra interattiva separata.
-- Non stampare il PIT, neppure parzialmente.
+- Non chiedere mai all’utente di scrivere la chiave privata nella chat.
+- Non inserirla mai in un comando, un argomento CLI, un file del progetto o un log.
+- Avviare sempre il launcher incluso: apre una pagina locale temporanea fuori dalla conversazione.
+- Non recuperare, stampare o mascherare la chiave privata.
 - Prima della prima scrittura, verificare il nome dell’account con una lettura.
 
 ## Release stabile
 
-Release stabile: `v1.1.0`.
+Release stabile: `v1.2.0`.
 
 Repository: `https://github.com/FuturiaMarketing/futuria-crm-client`.
 
@@ -30,9 +30,9 @@ Repository: `https://github.com/FuturiaMarketing/futuria-crm-client`.
 Per l’installazione eseguita direttamente dall’agente, usare il percorso personale ufficiale delle skill di Claude Code:
 
 1. Destinazione: `~/.claude/skills/futuria-crm-client`.
-2. Se la cartella non esiste, clonare `https://github.com/FuturiaMarketing/futuria-crm-client.git` alla release `v1.1.0` con cronologia ridotta.
-3. Se esiste già, verificare prima che sia la copia di questo repository e che non contenga modifiche locali; solo in quel caso aggiornare al tag `v1.1.0`. Non cancellare o sovrascrivere una cartella ambigua.
-4. Se Git non è disponibile, scaricare l’archivio GitHub del tag `v1.1.0` ed estrarlo atomicamente nella stessa destinazione.
+2. Se la cartella non esiste, clonare `https://github.com/FuturiaMarketing/futuria-crm-client.git` alla release `v1.2.0` con cronologia ridotta.
+3. Se esiste già, verificare prima che sia la copia di questo repository e che non contenga modifiche locali; solo in quel caso aggiornare al tag `v1.2.0`. Non cancellare o sovrascrivere una cartella ambigua.
+4. Se Git non è disponibile, scaricare l’archivio GitHub del tag `v1.2.0` ed estrarlo atomicamente nella stessa destinazione.
 5. Eseguire `claude plugin details futuria-crm@skills-dir` quando disponibile, quindi `/reload-plugins` oppure aprire una nuova sessione.
 
 Claude Code riconosce come plugin personale ogni cartella sotto `~/.claude/skills/` che contiene `.claude-plugin/plugin.json`; non serve registrare un marketplace per questo percorso.
@@ -40,7 +40,7 @@ Claude Code riconosce come plugin personale ogni cartella sotto `~/.claude/skill
 Il marketplace resta disponibile per l’installazione manuale da una sessione Claude Code:
 
 ```text
-/plugin marketplace add https://github.com/FuturiaMarketing/futuria-crm-client.git#v1.1.0
+/plugin marketplace add https://github.com/FuturiaMarketing/futuria-crm-client.git#v1.2.0
 /plugin install futuria-crm@futuria-crm
 ```
 
@@ -48,20 +48,28 @@ Non aggiornare Claude Code o installare software di sistema senza aver informato
 
 ## Codex
 
-Usare la skill di sistema `$skill-installer` per installare entrambe le cartelle dalla release congelata:
+Usare la skill di sistema `$skill-installer` per installare entrambe le skill indipendenti dalla release congelata:
 
 ```text
 Installa con $skill-installer dal repository FuturiaMarketing/futuria-crm-client,
-ref v1.1.0, le cartelle skills/futuria-crm e skills/pulisci-liste-crm.
+ref v1.2.0, le cartelle skills/futuria-crm e skills/pulisci-liste-crm.
 ```
 
-Se `$skill-installer` non è disponibile, scaricare la release `v1.1.0` e copiare le due cartelle sotto la directory personale delle skill di Codex, senza sovrascrivere directory ambigue. Aprire una nuova chat se le skill non vengono rilevate subito.
+Se `$skill-installer` non è disponibile, scaricare la release `v1.2.0` e copiare le due cartelle sotto la directory personale delle skill di Codex, senza sovrascrivere directory ambigue. Aprire una nuova chat se le skill non vengono rilevate subito.
 
-Il repository include anche il manifest `.codex-plugin/plugin.json` e il marketplace `.agents/plugins/marketplace.json`. `codex plugin marketplace add FuturiaMarketing/futuria-crm-client@v1.1.0` registra il catalogo nei client che lo supportano, ma non va confuso con l’installazione delle skill.
+Il repository include anche il manifest `.codex-plugin/plugin.json` e il marketplace `.agents/plugins/marketplace.json`. `codex plugin marketplace add FuturiaMarketing/futuria-crm-client@v1.2.0` registra il catalogo nei client che lo supportano, ma non va confuso con l’installazione delle due skill.
 
-## Configurazione protetta delle credenziali
+## Configurazione grafica protetta
 
-Individuare la cartella installata della skill `futuria-crm`, quindi eseguire il launcher adatto al sistema operativo. Il launcher apre una seconda finestra: il PIT viene inserito soltanto lì.
+Individuare la cartella installata della skill `futuria-crm`, quindi eseguire il launcher adatto al sistema operativo. Il launcher usa Node.js, già presente nella maggior parte degli ambienti Codex e Claude Code, per aprire una pagina raggiungibile soltanto su `127.0.0.1` e valida per una sessione temporanea.
+
+La pagina:
+
+- mostra una guida visiva in tre passaggi con schermate Futuria CRM;
+- accetta il link completo dell’account ed estrae automaticamente l’ID;
+- verifica la chiave in sola lettura;
+- salva la credenziale con la protezione nativa del sistema operativo;
+- restituisce all’agente soltanto l’esito e il nome dell’account.
 
 ### Windows
 
@@ -71,7 +79,7 @@ Dal terminale dell’agente eseguire:
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "<skill-futuria-crm>\scripts\launch-credential-setup.ps1"
 ```
 
-Si apre una nuova finestra PowerShell visibile. Lo script usa `Read-Host -AsSecureString` e salva il PIT cifrato per l’utente Windows corrente. L’ID account viene salvato nella configurazione locale e non è un segreto.
+Il browser apre il configuratore. Dopo la verifica, la chiave viene cifrata con Windows DPAPI per l’utente corrente. L’ID account viene salvato nella configurazione locale e non è un segreto.
 
 ### macOS
 
@@ -81,11 +89,20 @@ Dal terminale dell’agente eseguire:
 bash "<skill-futuria-crm>/scripts/launch-credential-setup.sh"
 ```
 
-Si apre una nuova finestra Terminale visibile. Il comando nativo del Portachiavi legge il PIT con un prompt senza eco e lo salva nel Portachiavi di macOS, senza inserirlo negli argomenti di processo o nel profilo shell.
+Il browser apre lo stesso configuratore. Dopo la verifica, la chiave viene salvata nel Portachiavi dell’utente macOS senza comparire negli argomenti di processo o nel profilo shell.
+
+### Fallback senza Node.js
+
+Se `node` non è disponibile, lo stesso launcher apre automaticamente il prompt protetto precedente:
+
+- PowerShell con input nascosto e DPAPI su Windows;
+- Terminale con input nascosto e Portachiavi su macOS.
+
+Non installare Node.js soltanto per il configuratore senza prima informare l’utente.
 
 ### Linux
 
-Nella v1 il percorso protetto automatizzato è previsto per Windows e macOS. Su Linux usare variabili d’ambiente impostate personalmente dall’utente in un terminale separato; non far transitare i valori nella chat.
+Il percorso protetto automatizzato è previsto per Windows e macOS. Su Linux usare variabili d’ambiente impostate personalmente dall’utente in un terminale separato; non far transitare i valori nella chat.
 
 ## Verifica finale in sola lettura
 
@@ -104,11 +121,20 @@ bash "<skill-futuria-crm>/scripts/crm-api.sh" GET "/locations/{location}"
 Confermare all’utente soltanto:
 
 - runtime installato;
-- versione della skill;
+- versione letta dal file `VERSION`;
 - nome dell’account collegato;
 - esito della verifica.
 
-Se la lettura fallisce per permessi, usare la sanity read contatti documentata in `skills/futuria-crm/references/getting-started.md`. Non modificare il PIT senza aver classificato l’errore.
+Se la lettura fallisce per permessi, usare la sanity read contatti documentata in `skills/futuria-crm/references/getting-started.md`. Non sostituire la chiave prima di aver classificato l’errore.
+
+## Aggiornamenti
+
+Non esiste un aggiornamento silenzioso in background. Prima di una nuova configurazione, o quando l’utente chiede di verificare gli aggiornamenti:
+
+1. leggere la versione locale da `VERSION`;
+2. confrontarla con l’ultima GitHub Release stabile del repository;
+3. se esiste una versione più recente, informare l’utente e proporre l’aggiornamento;
+4. aggiornare soltanto una copia riconosciuta, pulita e senza modifiche locali, dopo conferma.
 
 ## Python e pulizia liste
 

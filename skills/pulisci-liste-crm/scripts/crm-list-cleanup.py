@@ -559,7 +559,7 @@ def cmd_detect(args):
     if args.protect_tags:
         protect |= {t.strip().lower() for t in args.protect_tags.split(",") if t.strip()}
 
-    sys.stderr.write(f"[detect] account {loc}; PIT protetto disponibile.\n")
+    sys.stderr.write(f"[detect] account {loc}; chiave privata protetta disponibile.\n")
     contacts = fetch_all_contacts(token, loc)
     buckets = minute_buckets(contacts)
 
