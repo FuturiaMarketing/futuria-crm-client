@@ -97,9 +97,18 @@ function parseArgs(argv) {
   return result;
 }
 
-function runChild(command, args, input = "") {
+export function windowsPowerShellEnvironment(source = process.env) {
+  const environment = { ...source };
+  for (const key of Object.keys(environment)) {
+    if (key.toLowerCase() === "psmodulepath") delete environment[key];
+  }
+  return environment;
+}
+
+function runChild(command, args, input = "", options = {}) {
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, {
+      ...options,
       windowsHide: true,
       stdio: ["pipe", "ignore", "pipe"],
     });
@@ -122,6 +131,7 @@ async function storeWindowsCredential(location, privateKey) {
     "powershell.exe",
     ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", setupScript, "-FromStdin"],
     `${location}\n${privateKey}\n`,
+    { env: windowsPowerShellEnvironment() },
   );
 }
 

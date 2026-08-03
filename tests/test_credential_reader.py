@@ -16,6 +16,17 @@ import credential_reader  # noqa: E402
 
 
 class CredentialReaderTests(unittest.TestCase):
+    def test_windows_powershell_environment_drops_inherited_module_path(self):
+        with mock.patch.dict(
+            os.environ,
+            {"PsMoDuLePaTh": "C:/Program Files/PowerShell/Modules", "KEEP_ME": "yes"},
+            clear=True,
+        ):
+            environment = credential_reader._windows_powershell_environment()
+
+        self.assertNotIn("psmodulepath", {key.casefold() for key in environment})
+        self.assertEqual(environment["KEEP_ME"], "yes")
+
     def test_environment_credentials_take_precedence(self):
         env = {
             "FUTURIA_CRM_TOKEN": "pit-test-token-value",

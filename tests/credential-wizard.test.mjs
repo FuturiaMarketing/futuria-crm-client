@@ -10,6 +10,7 @@ import {
   isValidPrivateKey,
   parseLocationInput,
   startWizard,
+  windowsPowerShellEnvironment,
 } from "../skills/futuria-crm/scripts/credential-wizard.mjs";
 
 test("estrae l’ID da un link Futuria CRM o da un ID diretto", () => {
@@ -136,7 +137,15 @@ test("Windows salva dalla pipe con DPAPI senza esporre la chiave", {
     "scripts",
     "setup-credentials.ps1",
   );
-  const environment = { ...process.env, APPDATA: directory };
+  const environment = windowsPowerShellEnvironment({
+    ...process.env,
+    APPDATA: directory,
+    PSModulePath: "C:\\Program Files\\PowerShell\\Modules",
+  });
+  assert.equal(
+    Object.keys(environment).some((key) => key.toLowerCase() === "psmodulepath"),
+    false,
+  );
 
   try {
     const store = spawnSync(
@@ -159,6 +168,21 @@ test("Windows salva dalla pipe con DPAPI senza esporre la chiave", {
     assert.equal(status.status, 0, status.stderr);
     assert.match(status.stdout, /Chiave privata protetta: presente/);
     assert.equal(status.stdout.includes("pit-preview"), false);
+
+    const credentialPath = join(directory, "Futuria CRM", "credential.xml");
+    const readEnvironment = { ...environment, FUTURIA_TEST_CREDENTIAL_PATH: credentialPath };
+    const read = spawnSync(
+      "powershell.exe",
+      [
+        "-NoProfile",
+        "-NonInteractive",
+        "-Command",
+        "$c=Import-Clixml -LiteralPath $env:FUTURIA_TEST_CREDENTIAL_PATH; [Console]::Out.Write($c.GetNetworkCredential().Password)",
+      ],
+      { encoding: "utf8", env: readEnvironment },
+    );
+    assert.equal(read.status, 0, read.stderr);
+    assert.equal(read.stdout, "pit-preview-dpapi-1234567890");
 
     const config = JSON.parse(readFileSync(join(directory, "Futuria CRM", "config.json"), "utf8"));
     assert.equal(config.location, "demoAccount1234567890");

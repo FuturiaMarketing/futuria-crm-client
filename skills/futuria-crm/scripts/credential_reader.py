@@ -19,6 +19,14 @@ TOKEN_RE = re.compile(r"^pit-[A-Za-z0-9._-]{6,2048}$")
 LOCATION_RE = re.compile(r"^[A-Za-z0-9_-]{6,128}$")
 
 
+def _windows_powershell_environment() -> dict[str, str]:
+    environment = os.environ.copy()
+    for key in tuple(environment):
+        if key.casefold() == "psmodulepath":
+            environment.pop(key, None)
+    return environment
+
+
 def _config_path() -> Path:
     system = platform.system()
     if system == "Windows":
@@ -59,6 +67,7 @@ def _read_windows_token() -> str:
         capture_output=True,
         text=True,
         check=False,
+        env=_windows_powershell_environment(),
     )
     if result.returncode != 0:
         raise CredentialError("La chiave privata protetta di Windows non è leggibile dall'utente corrente.")
