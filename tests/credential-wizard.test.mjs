@@ -56,6 +56,8 @@ test("il server locale usa sessione, cookie e CSRF e completa solo la preview", 
   assert.match(cookie, /HttpOnly/);
   assert.match(cookie, /SameSite=Strict/);
   const html = await pageResponse.text();
+  assert.match(html, /seleziona <strong>tutti gli ambiti disponibili<\/strong>/);
+  assert.match(html, /Gli ambiti lasciati disattivati limiteranno le azioni/);
   const csrf = html.match(/<meta name="csrf-token" content="([a-f0-9]+)">/)?.[1];
   assert.ok(csrf);
 

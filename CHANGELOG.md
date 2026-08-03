@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.1 — 2026-08-03
+
+- Updated the guided setup to recommend selecting every available scope when the user wants the agent to use all supported Futuria CRM functions.
+- Clarified that omitted scopes limit the corresponding agent actions.
+- Reduced the wizard typography scale while preserving layout, interactions and accessibility.
+
 ## 1.2.0 — 2026-08-03
 
 - Added a guided local credential wizard for Windows and macOS, with a three-step visual accordion and real Futuria CRM screenshots.
