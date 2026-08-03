@@ -106,14 +106,14 @@ h3 {
 
 h1 {
   margin-bottom: 10px;
-  font-size: clamp(2rem, 3.2vw, 2.75rem);
+  font-size: clamp(1.8rem, 2.8vw, 2.35rem);
   line-height: 1.08;
 }
 
 .brand-header p,
 .form-intro {
   color: var(--muted);
-  font-size: 1.05rem;
+  font-size: 0.96rem;
   line-height: 1.55;
 }
 
@@ -134,7 +134,7 @@ h1 {
 
 .section-label {
   margin: 0 0 10px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   letter-spacing: 0;
 }
 
@@ -164,7 +164,7 @@ h1 {
   padding: 11px 16px;
   color: var(--navy-deep);
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   list-style: none;
 }
@@ -205,7 +205,7 @@ a:focus-visible {
 .step-content p {
   margin: 14px 0 12px;
   color: #3f5366;
-  font-size: 0.93rem;
+  font-size: 0.89rem;
   line-height: 1.55;
 }
 
@@ -246,7 +246,7 @@ a:focus-visible {
 
 .form-panel h2 {
   margin-bottom: 12px;
-  font-size: clamp(2rem, 3.2vw, 2.8rem);
+  font-size: clamp(1.8rem, 2.8vw, 2.4rem);
   line-height: 1.08;
 }
 
@@ -264,7 +264,7 @@ a:focus-visible {
   display: block;
   margin-bottom: 9px;
   color: #132b43;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 680;
 }
 
@@ -276,7 +276,7 @@ a:focus-visible {
   background: #fff;
   border: 1px solid #aebbc7;
   border-radius: 9px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 
@@ -371,7 +371,7 @@ a:focus-visible {
 .account-card strong {
   display: block;
   color: var(--navy-deep);
-  font-size: 1.25rem;
+  font-size: 1.12rem;
 }
 
 .status-pill {
@@ -399,7 +399,7 @@ a:focus-visible {
   border: 0;
   border-radius: 9px;
   cursor: pointer;
-  font-size: 1.04rem;
+  font-size: 0.98rem;
   font-weight: 760;
   box-shadow: 0 10px 22px rgba(16, 61, 102, 0.16);
 }
@@ -434,7 +434,7 @@ a:focus-visible {
 
 .success-state h3 {
   margin-bottom: 10px;
-  font-size: 1.65rem;
+  font-size: 1.45rem;
 }
 
 .success-state > p:not(.success-kicker) {

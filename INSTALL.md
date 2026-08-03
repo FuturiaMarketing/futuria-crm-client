@@ -21,7 +21,7 @@ Il collegamento usa API diretta e una credenziale chiamata **Private Integration
 
 ## Release stabile
 
-Release stabile: `v1.2.0`.
+Release stabile: `v1.2.1`.
 
 Repository: `https://github.com/FuturiaMarketing/futuria-crm-client`.
 
@@ -30,9 +30,9 @@ Repository: `https://github.com/FuturiaMarketing/futuria-crm-client`.
 Per l’installazione eseguita direttamente dall’agente, usare il percorso personale ufficiale delle skill di Claude Code:
 
 1. Destinazione: `~/.claude/skills/futuria-crm-client`.
-2. Se la cartella non esiste, clonare `https://github.com/FuturiaMarketing/futuria-crm-client.git` alla release `v1.2.0` con cronologia ridotta.
-3. Se esiste già, verificare prima che sia la copia di questo repository e che non contenga modifiche locali; solo in quel caso aggiornare al tag `v1.2.0`. Non cancellare o sovrascrivere una cartella ambigua.
-4. Se Git non è disponibile, scaricare l’archivio GitHub del tag `v1.2.0` ed estrarlo atomicamente nella stessa destinazione.
+2. Se la cartella non esiste, clonare `https://github.com/FuturiaMarketing/futuria-crm-client.git` alla release `v1.2.1` con cronologia ridotta.
+3. Se esiste già, verificare prima che sia la copia di questo repository e che non contenga modifiche locali; solo in quel caso aggiornare al tag `v1.2.1`. Non cancellare o sovrascrivere una cartella ambigua.
+4. Se Git non è disponibile, scaricare l’archivio GitHub del tag `v1.2.1` ed estrarlo atomicamente nella stessa destinazione.
 5. Eseguire `claude plugin details futuria-crm@skills-dir` quando disponibile, quindi `/reload-plugins` oppure aprire una nuova sessione.
 
 Claude Code riconosce come plugin personale ogni cartella sotto `~/.claude/skills/` che contiene `.claude-plugin/plugin.json`; non serve registrare un marketplace per questo percorso.
@@ -40,7 +40,7 @@ Claude Code riconosce come plugin personale ogni cartella sotto `~/.claude/skill
 Il marketplace resta disponibile per l’installazione manuale da una sessione Claude Code:
 
 ```text
-/plugin marketplace add https://github.com/FuturiaMarketing/futuria-crm-client.git#v1.2.0
+/plugin marketplace add https://github.com/FuturiaMarketing/futuria-crm-client.git#v1.2.1
 /plugin install futuria-crm@futuria-crm
 ```
 
@@ -52,12 +52,12 @@ Usare la skill di sistema `$skill-installer` per installare entrambe le skill in
 
 ```text
 Installa con $skill-installer dal repository FuturiaMarketing/futuria-crm-client,
-ref v1.2.0, le cartelle skills/futuria-crm e skills/pulisci-liste-crm.
+ref v1.2.1, le cartelle skills/futuria-crm e skills/pulisci-liste-crm.
 ```
 
-Se `$skill-installer` non è disponibile, scaricare la release `v1.2.0` e copiare le due cartelle sotto la directory personale delle skill di Codex, senza sovrascrivere directory ambigue. Aprire una nuova chat se le skill non vengono rilevate subito.
+Se `$skill-installer` non è disponibile, scaricare la release `v1.2.1` e copiare le due cartelle sotto la directory personale delle skill di Codex, senza sovrascrivere directory ambigue. Aprire una nuova chat se le skill non vengono rilevate subito.
 
-Il repository include anche il manifest `.codex-plugin/plugin.json` e il marketplace `.agents/plugins/marketplace.json`. `codex plugin marketplace add FuturiaMarketing/futuria-crm-client@v1.2.0` registra il catalogo nei client che lo supportano, ma non va confuso con l’installazione delle due skill.
+Il repository include anche il manifest `.codex-plugin/plugin.json` e il marketplace `.agents/plugins/marketplace.json`. `codex plugin marketplace add FuturiaMarketing/futuria-crm-client@v1.2.1` registra il catalogo nei client che lo supportano, ma non va confuso con l’installazione delle due skill.
 
 ## Configurazione grafica protetta
 
