@@ -24,7 +24,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 ERRORS = []
 
-TEXT_EXT = {".md", ".json", ".yaml", ".yml", ".py", ".ps1", ".sh", ".html", ".txt"}
+TEXT_EXT = {".md", ".json", ".yaml", ".yml", ".py", ".ps1", ".sh", ".html", ".css", ".js", ".mjs", ".txt"}
 SKIP_DIRS = {".git", ".github", "node_modules", "__pycache__"}
 SELF = Path(__file__).resolve()
 
@@ -40,6 +40,7 @@ HOST_ALLOW = BRAND_ALLOW | {
     "skills/futuria-crm/references/api-and-troubleshooting.md",
     "skills/futuria-crm/scripts/crm-api.ps1",
     "skills/futuria-crm/scripts/crm-api.sh",
+    "skills/futuria-crm/scripts/credential-wizard.mjs",
     "skills/pulisci-liste-crm/scripts/crm-list-cleanup.py",
 }
 
@@ -109,6 +110,18 @@ def check_packaging():
     if claude.get("name") != "futuria-crm" or codex.get("name") != "futuria-crm":
         ERRORS.append("[pack]  il nome plugin deve essere futuria-crm in entrambi i runtime")
 
+    manifest_version = claude.get("version")
+    for version_path in [
+        ROOT / "skills" / "futuria-crm" / "VERSION",
+        ROOT / "skills" / "pulisci-liste-crm" / "VERSION",
+    ]:
+        if not version_path.exists():
+            ERRORS.append(f"[pack]  manca {rel(version_path)}")
+            continue
+        skill_version = version_path.read_text(encoding="utf-8").strip()
+        if skill_version != manifest_version:
+            ERRORS.append(f"[pack]  {rel(version_path)}={skill_version} ma manifest={manifest_version}")
+
     privacy_url = (codex.get("interface") or {}).get("privacyPolicyURL", "")
     if not privacy_url.endswith("/PRIVACY.md"):
         ERRORS.append("[pack]  privacyPolicyURL Codex mancante o non canonico")
@@ -137,6 +150,14 @@ def check_credential_contract():
         ROOT / "skills" / "futuria-crm" / "scripts" / "credential_reader.py",
         ROOT / "skills" / "futuria-crm" / "scripts" / "launch-credential-setup.ps1",
         ROOT / "skills" / "futuria-crm" / "scripts" / "launch-credential-setup.sh",
+        ROOT / "skills" / "futuria-crm" / "scripts" / "credential-wizard.mjs",
+        ROOT / "skills" / "futuria-crm" / "scripts" / "credential-wizard" / "index.html",
+        ROOT / "skills" / "futuria-crm" / "scripts" / "credential-wizard" / "styles.css",
+        ROOT / "skills" / "futuria-crm" / "scripts" / "credential-wizard" / "app.js",
+        ROOT / "skills" / "futuria-crm" / "scripts" / "credential-wizard" / "assets" / "futuria-crm-logo.png",
+        ROOT / "skills" / "futuria-crm" / "scripts" / "credential-wizard" / "assets" / "step-1-private-integrations.png",
+        ROOT / "skills" / "futuria-crm" / "scripts" / "credential-wizard" / "assets" / "step-2-integration-details.png",
+        ROOT / "skills" / "futuria-crm" / "scripts" / "credential-wizard" / "assets" / "step-3-paste-here.png",
     ]
     for path in scripts:
         if not path.exists():
@@ -152,6 +173,20 @@ def check_credential_contract():
         text = mac_api.read_text(encoding="utf-8", errors="replace")
         if "${1^^}" in text:
             ERRORS.append("[compat] crm-api.sh usa sintassi non supportata da Bash 3 di macOS")
+
+    wizard = ROOT / "skills" / "futuria-crm" / "scripts" / "credential-wizard.mjs"
+    if wizard.exists():
+        text = wizard.read_text(encoding="utf-8", errors="replace")
+        lower_text = text.lower()
+        if not all(marker in lower_text for marker in ["127.0.0.1", "samesite=strict", "x-futuria-csrf", "cache-control"]):
+            ERRORS.append("[cred]  il configuratore locale non dichiara tutte le protezioni richieste")
+        unsafe_mac_args = re.search(
+            r'runChild\(\s*"/usr/bin/security"\s*,\s*\[[^\]]*privateKey',
+            text,
+            re.DOTALL,
+        )
+        if unsafe_mac_args:
+            ERRORS.append("[cred]  il configuratore macOS passa la chiave negli argomenti di processo")
 
 
 def parse_frontmatter(text):

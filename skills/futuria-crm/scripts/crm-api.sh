@@ -38,9 +38,9 @@ if [[ -z "${token}" || -z "${location}" ]]; then
   echo "Credenziali Futuria CRM mancanti. Esegui prima lo script di configurazione protetta." >&2
   exit 3
 fi
-if [[ "${token}" != pit-* ]]; then
+if [[ ! "${token}" =~ ^pit-[A-Za-z0-9._-]+$ ]] || (( ${#token} < 10 || ${#token} > 2052 )); then
   unset token
-  echo "Il PIT configurato non ha il formato atteso." >&2
+  echo "La chiave privata configurata non ha il formato atteso." >&2
   exit 3
 fi
 if [[ ! "${location}" =~ ^[A-Za-z0-9_-]{6,128}$ ]]; then

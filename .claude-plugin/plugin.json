@@ -1,7 +1,7 @@
 {
   "name": "futuria-crm",
-  "version": "1.1.0",
-  "description": "Assistente Futuria CRM per agenti AI: usa il tuo account Futuria CRM per gestire contatti, conversazioni e messaggi, opportunità e pipeline, appuntamenti, task, tag, email, social, blog e pagamenti, più la pulizia delle liste contatti. Lavora API-first con il PIT protetto dal sistema operativo; interfaccia web solo come fallback. Risposte sempre in italiano.",
+  "version": "1.2.0",
+  "description": "Assistente Futuria CRM per agenti AI: usa il tuo account Futuria CRM per gestire contatti, conversazioni e messaggi, opportunità e pipeline, appuntamenti, task, tag, email, social, blog e pagamenti, più la pulizia delle liste contatti. Lavora API-first con la credenziale protetta dal sistema operativo; interfaccia web solo come fallback. Risposte sempre in italiano.",
   "author": {
     "name": "Futuria Marketing",
     "email": "fabrizio@futuriamarketing.com"

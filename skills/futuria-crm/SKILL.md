@@ -24,19 +24,20 @@ When in doubt about wording, load `references/terminology-and-voice.md`. It carr
 ## 2. Single-account model, API-first
 
 - The user has **one** Futuria CRM account. There is no agency view and no multi-account switching.
-- Two values connect the agent to that account: the PIT and the account id. Never confuse them.
+- Two values connect the agent to that account: the Private Integration Token (PIT), shown to the user as the private connection key, and the account id. Never confuse them.
 - **Preferred credential storage:** Windows DPAPI or macOS Keychain, configured with the bundled scripts. Environment variables `FUTURIA_CRM_TOKEN` and `FUTURIA_CRM_LOCATION` are supported only as a technical fallback.
-- Never ask the user to paste the PIT in chat, a prompt, or a command. If setup is required, open a separate visible terminal window and follow `references/getting-started.md`.
+- Never ask the user to paste the private key in chat, a prompt, or a command. If setup is required, launch the protected graphical configurator and follow `references/getting-started.md`; its PowerShell/Terminal prompt is only the automatic fallback when Node.js is unavailable.
 - Capability priority for every task:
   1. **Direct API through the bundled helper** — the canonical channel. Use `scripts/crm-api.ps1` on Windows or `scripts/crm-api.sh` on macOS so the PIT never enters the model-visible command. Endpoint families, pagination and the error matrix are in `references/api-and-troubleshooting.md`; per-area endpoints are in each area reference.
   2. **Web interface** — only for builder-only internals the API does not expose, or to visually confirm something for the user.
 - The initial release does not install or require an MCP connector. If a future chat edition exposes Futuria CRM tools, follow that edition's own connection contract instead of mixing the two channels.
 - If credentials are missing, do not dead-end: guide the user through protected setup in plain Italian — see `references/getting-started.md`.
+- Updates are never silent. Before a new setup or when the user asks about updates, read the local `VERSION`, compare it with the latest stable GitHub Release and offer an upgrade only if the installed copy is recognised and unmodified.
 
 ## 3. Fast start
 
 1. Identify the area and load the matching reference. Load only what you need.
-2. Confirm protected credentials are available without retrieving or printing the PIT.
+2. Confirm protected credentials are available without retrieving or printing the private key.
 3. Validate context minimally: if the account has not responded in this session, do one read sanity check through the bundled API helper.
 4. For writes: read current state → apply the smallest change → re-read through the canonical surface → report exactly what changed, in Italian.
 
@@ -50,7 +51,7 @@ Before any write (create / update / delete / archive):
 4. Report the exact fields changed and object identifiers, in Italian.
 5. For destructive actions (delete / replace / disable), confirm intent with the user first and keep rollback context.
 
-Never retrieve, print, echo, mask, summarize, or include the PIT in a tool argument. Diagnose only its availability and the resulting HTTP class.
+Never retrieve, print, echo, mask, summarize, or include the private key in a tool argument. Diagnose only its availability and the resulting HTTP class.
 
 ## 5. Reference map
 

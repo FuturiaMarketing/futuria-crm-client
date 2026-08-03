@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <meta name="csrf-token" content="__CSRF_TOKEN__">
+    <meta name="preview-mode" content="__PREVIEW_MODE__">
+    <title>Collega Futuria CRM</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="guide-panel" aria-labelledby="guide-title">
+        <header class="brand-header">
+          <img class="brand-logo" src="assets/futuria-crm-logo.png" alt="Futuria CRM">
+          <h1 id="guide-title">Collega Futuria CRM</h1>
+          <p>Segui la guida: la chiave resta sul computer e l’agente riceve soltanto l’esito.</p>
+        </header>
+
+        <div class="preview-banner" id="preview-banner" hidden>
+          Anteprima sicura: nessuna credenziale verrà salvata.
+        </div>
+
+        <h2 class="section-label">Guida visiva</h2>
+        <div class="accordion" id="guide-accordion">
+          <details open>
+            <summary><span class="step-number">1</span><span>Apri Integrazioni private</span></summary>
+            <div class="step-content">
+              <p>In Futuria CRM vai su <strong>Impostazioni → Integrazioni private</strong> e seleziona <strong>Crea nuova integrazione</strong>.</p>
+              <img src="assets/step-1-private-integrations.png" alt="Schermata Integrazioni private con il pulsante Crea nuova integrazione">
+              <a class="secondary-action" href="https://app.futuriamarketing.com/" target="_blank" rel="noreferrer">Apri Futuria CRM</a>
+            </div>
+          </details>
+
+          <details>
+            <summary><span class="step-number">2</span><span>Crea la chiave privata</span></summary>
+            <div class="step-content">
+              <p>Assegna un nome riconoscibile, per esempio <strong>Agente AI Futuria</strong>. Negli ambiti abilita almeno la lettura dell’account e le aree che vuoi affidare all’agente.</p>
+              <img src="assets/step-2-integration-details.png" alt="Schermata di creazione di una nuova integrazione privata">
+            </div>
+          </details>
+
+          <details>
+            <summary><span class="step-number">3</span><span>Copia la chiave e torna qui</span></summary>
+            <div class="step-content">
+              <p>Completa la creazione, copia la chiave mostrata da Futuria CRM e incollala nel campo protetto a destra. Non inserirla mai nella chat.</p>
+              <img src="assets/step-3-paste-here.png" alt="Campi del configuratore in cui incollare il link dell’account e la chiave privata">
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <section class="form-panel" aria-labelledby="form-title">
+        <div class="form-wrap">
+          <header>
+            <p class="eyebrow">Configurazione protetta</p>
+            <h2 id="form-title">Dati di collegamento</h2>
+            <p class="form-intro">Inserisci qui i due dati copiati da Futuria CRM. Restano su questo computer.</p>
+          </header>
+
+          <form id="credential-form" novalidate>
+            <div class="field-group">
+              <label for="account-link">Link dell’account</label>
+              <input
+                id="account-link"
+                name="account-link"
+                type="url"
+                inputmode="url"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="https://app.futuriamarketing.com/..."
+                aria-describedby="account-help account-error"
+              >
+              <p class="field-help" id="account-help">Apri il tuo account e copia l’indirizzo completo dalla barra del browser.</p>
+              <p class="field-error" id="account-error" role="alert"></p>
+            </div>
+
+            <div class="field-group">
+              <label for="private-key">Chiave privata di collegamento</label>
+              <div class="password-field">
+                <input
+                  id="private-key"
+                  name="private-key"
+                  type="password"
+                  autocomplete="new-password"
+                  autocapitalize="none"
+                  spellcheck="false"
+                  placeholder="Incolla qui la chiave privata"
+                  aria-describedby="key-help key-error"
+                >
+                <button class="visibility-toggle" id="visibility-toggle" type="button" aria-controls="private-key">Mostra</button>
+              </div>
+              <p class="field-help" id="key-help">Non sarà mostrata all’agente, inviata in chat o salvata in chiaro.</p>
+              <p class="field-error" id="key-error" role="alert"></p>
+            </div>
+
+            <div class="account-card" id="account-card" aria-live="polite">
+              <div>
+                <span id="account-kicker">In attesa del link</span>
+                <strong id="account-name">Il tuo account Futuria CRM</strong>
+              </div>
+              <span class="status-pill" id="status-pill">Da verificare</span>
+            </div>
+
+            <p class="form-error" id="form-error" role="alert"></p>
+
+            <button class="primary-action" id="submit-button" type="submit">
+              <span id="submit-label">Conferma e collega</span>
+            </button>
+          </form>
+
+          <div class="success-state" id="success-state" hidden tabindex="-1">
+            <p class="success-kicker">Collegamento completato</p>
+            <h3 id="success-account">Account Futuria CRM</h3>
+            <p>La credenziale è protetta dal sistema operativo. Puoi chiudere questa pagina e tornare al tuo agente.</p>
+            <button class="primary-action" id="close-button" type="button">Chiudi il configuratore</button>
+          </div>
+
+          <footer class="form-footer">
+            <button class="text-button" id="cancel-button" type="button">Annulla</button>
+            <a href="https://futuriamarketing.com/" target="_blank" rel="noreferrer">Serve aiuto?</a>
+          </footer>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

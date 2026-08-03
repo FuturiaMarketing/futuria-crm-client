@@ -2,10 +2,19 @@
 
 ## Credenziali
 
-- Non inserire mai il PIT in chat, prompt, issue GitHub, screenshot o file del progetto.
-- Usare gli script protetti inclusi nella skill: DPAPI su Windows, Portachiavi su macOS.
-- Assegnare al PIT soltanto gli scope necessari.
-- Revocare e rigenerare subito il PIT se si sospetta un’esposizione.
+- La credenziale API è un **Private Integration Token (PIT)**; nel configuratore viene chiamata **chiave privata di collegamento**.
+- Non inserirla mai in chat, prompt, issue GitHub, screenshot o file del progetto.
+- Usare il configuratore protetto incluso nella skill: DPAPI su Windows, Portachiavi su macOS.
+- Assegnare alla chiave soltanto gli ambiti necessari.
+- Revocarla e rigenerarla subito se si sospetta un’esposizione.
+
+## Configuratore locale
+
+- Ascolta soltanto su `127.0.0.1`, su una porta casuale e con un percorso di sessione non prevedibile.
+- Usa cookie `HttpOnly` e `SameSite=Strict`, token CSRF, limiti di richiesta, Content Security Policy e header `no-store`.
+- Verifica l’account in sola lettura prima del salvataggio.
+- Non inserisce la chiave negli argomenti di processo, nella cronologia shell o nei log.
+- La sessione scade automaticamente; senza Node.js viene usato il prompt protetto nativo.
 
 ## Azioni dell’agente
 

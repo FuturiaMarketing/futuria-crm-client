@@ -1,13 +1,14 @@
 # Futuria CRM — skill per agenti AI
 
-Plugin ufficiale **Futuria Marketing** per collegare Codex o Claude Code al proprio account **Futuria CRM** tramite PIT e API diretta.
+Plugin ufficiale **Futuria Marketing** per collegare Codex o Claude Code al proprio account **Futuria CRM** tramite API diretta. L’account autorizza il collegamento con un **Private Integration Token (PIT)**, presentato nel configuratore semplicemente come **chiave privata di collegamento**.
 
-La prima versione è volutamente locale e semplice:
+La release attuale:
 
 - funziona con **Codex** e **Claude Code**;
+- installa due skill indipendenti: `futuria-crm` e `pulisci-liste-crm`;
 - usa un solo account Futuria CRM;
 - non installa e non richiede alcun connettore MCP;
-- conserva il PIT nel portachiavi del sistema operativo, non nella chat;
+- conserva la chiave privata con la protezione del sistema operativo, non nella chat;
 - risponde sempre in italiano e chiama la piattaforma sempre **Futuria CRM**.
 
 ## Il testo da incollare al proprio agente
@@ -17,15 +18,29 @@ Copia questo testo in una chat nuova di Codex o Claude Code:
 ```text
 Installa la release stabile della skill Futuria CRM dal repository pubblico
 https://github.com/FuturiaMarketing/futuria-crm-client seguendo INSTALL.md.
-Rileva autonomamente se sei Codex o Claude Code e usa il percorso previsto per
-quel runtime. Non chiedermi mai di incollare il PIT in chat o in un comando:
-dopo l'installazione apri una finestra Terminale separata e visibile, avvia la
-configurazione protetta inclusa nella skill e lascia che inserisca lì PIT e ID
-account. Poi verifica la connessione in sola lettura e comunicami soltanto il
-nome dell'account collegato e l'esito.
+Usa il percorso previsto per il tuo runtime e apri il configuratore protetto
+incluso nella skill. Non chiedermi mai credenziali in chat o in un comando.
+Al termine verifica la connessione in sola lettura e comunicami soltanto il
+nome dell’account collegato, la versione installata e l’esito.
 ```
 
-L’agente seguirà la procedura dettagliata in [INSTALL.md](INSTALL.md). Non serve usare `winget` o Homebrew per installare la skill. Python è necessario soltanto per la funzione opzionale **Pulisci liste**; se manca, l’agente deve chiedere conferma prima di installarlo.
+Le istruzioni operative restano in [INSTALL.md](INSTALL.md), quindi il prompt può rimanere breve. Non servono `winget` o Homebrew per installare la skill. Python è necessario soltanto per la funzione opzionale **Pulisci liste**; se manca, l’agente deve chiedere conferma prima di installarlo.
+
+## Configurazione guidata
+
+Dopo l’installazione l’agente apre un configuratore grafico locale. L’utente:
+
+1. apre **Integrazioni private** seguendo la guida a fisarmonica con schermate reali;
+2. crea la chiave privata nel proprio account Futuria CRM;
+3. incolla nel configuratore il link dell’account e la chiave;
+4. attende la verifica in sola lettura e torna alla chat.
+
+La pagina è disponibile soltanto sul computer dell’utente e per una sessione temporanea. La chiave non entra nel prompt, negli argomenti dei comandi o nei log del configuratore.
+
+- **Windows:** la chiave viene cifrata con Windows DPAPI per l’utente corrente.
+- **macOS:** la chiave viene salvata nel Portachiavi di macOS.
+- Se Node.js non è disponibile, il launcher apre automaticamente il precedente prompt protetto in PowerShell o Terminale.
+- Le variabili d’ambiente restano un fallback per utenti tecnici e ambienti automatizzati.
 
 ## Cosa può fare
 
@@ -37,31 +52,28 @@ L’agente seguirà la procedura dettagliata in [INSTALL.md](INSTALL.md). Non se
 - **Pagamenti** — consulta ordini e transazioni in sola lettura.
 - **Pulizia liste** — individua profili chiaramente fasulli, li sottopone alla revisione dell’utente e procede solo dopo dry-run e conferma esplicita.
 
-## Come protegge il PIT
+## Aggiornamenti
 
-- **Windows:** inserimento nascosto in una finestra PowerShell; il PIT viene cifrato con la protezione dati dell’utente Windows.
-- **macOS:** inserimento nascosto in Terminale; il PIT viene salvato nel Portachiavi di macOS.
-- Le variabili d’ambiente restano disponibili come fallback per utenti tecnici e ambienti automatizzati, ma non sono il percorso consigliato.
-- Il PIT non deve mai essere incollato nella chat, inserito in un prompt o passato come argomento di un comando.
-
-Gli script API inclusi recuperano il PIT internamente e non lo stampano. Dettagli e limiti sono descritti in [PRIVACY.md](PRIVACY.md) e [SECURITY.md](SECURITY.md).
+La skill non si aggiorna in background e non modifica da sola i file installati. Dalla v1.2.0 l’agente legge il file `VERSION`, confronta la release pubblica stabile quando avvia una configurazione o quando l’utente chiede di verificare gli aggiornamenti e propone l’upgrade senza sovrascrivere copie ambigue o modificate.
 
 ## Uso
 
-Dopo l’installazione e la configurazione basta chiedere, per esempio:
+Dopo la configurazione basta chiedere, per esempio:
 
 - «Crea un contatto per Maria Bianchi e aggiungi il tag cliente-2026.»
 - «Com’è messa la pipeline Vendite questo mese?»
 - «Prepara una risposta WhatsApp a Luca per confermare l’appuntamento.»
 - «Pulisci le liste contatti dallo spam.»
 
-Codex può richiamare esplicitamente `$futuria-crm` o `$pulisci-liste-crm`. In Claude Code le skill del plugin sono disponibili anche tramite i comandi con namespace del plugin; normalmente non serve invocarli, perché l’agente riconosce le richieste dal linguaggio naturale.
+Codex può richiamare esplicitamente `$futuria-crm` o `$pulisci-liste-crm`. In Claude Code le skill del plugin sono disponibili anche tramite i comandi con namespace; normalmente l’agente riconosce la richiesta dal linguaggio naturale.
 
 ## Privacy essenziale
 
-I dati letti dal CRM vengono elaborati dall’agente AI scelto dall’utente. Possono quindi essere trattati anche dal relativo fornitore AI, secondo piano, impostazioni e contratto dell’utente. La skill non invia telemetria propria a Futuria Marketing e nella v1 non usa un server MCP Futuria.
+I dati letti dal CRM vengono elaborati dall’agente AI scelto dall’utente. Possono quindi essere trattati anche dal relativo fornitore AI, secondo piano, impostazioni e contratto dell’utente. La skill non invia telemetria propria a Futuria Marketing e in questa versione non usa un server MCP Futuria.
 
-Per attivazione, PIT, revoca o supporto: il proprio referente Futuria Marketing — <https://futuriamarketing.com>.
+Per attivazione, revoca della chiave privata o supporto: il proprio referente Futuria Marketing — <https://futuriamarketing.com>.
+
+Dettagli e limiti sono descritti in [PRIVACY.md](PRIVACY.md) e [SECURITY.md](SECURITY.md).
 
 ---
 
