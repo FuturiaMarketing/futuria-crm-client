@@ -5,7 +5,7 @@ Plugin ufficiale **Futuria Marketing** per collegare Codex o Claude Code al prop
 La release attuale:
 
 - funziona con **Codex** e **Claude Code**;
-- installa due skill indipendenti: `futuria-crm` e `pulisci-liste-crm`;
+- installa la skill `futuria-crm`;
 - usa un solo account Futuria CRM;
 - non installa e non richiede alcun connettore MCP;
 - conserva la chiave privata con la protezione del sistema operativo, non nella chat;
@@ -24,7 +24,7 @@ Al termine verifica la connessione in sola lettura e comunicami soltanto il
 nome dell’account collegato, la versione installata e l’esito.
 ```
 
-Le istruzioni operative restano in [INSTALL.md](INSTALL.md), quindi il prompt può rimanere breve. Non servono `winget` o Homebrew per installare la skill. Python è necessario soltanto per la funzione opzionale **Pulisci liste**; se manca, l’agente deve chiedere conferma prima di installarlo.
+Le istruzioni operative restano in [INSTALL.md](INSTALL.md), quindi il prompt può rimanere breve. Non servono `winget` o Homebrew per installare la skill. La skill non richiede Python.
 
 ## Configurazione guidata
 
@@ -51,7 +51,6 @@ La pagina è disponibile soltanto sul computer dell’utente e per una sessione 
 - **Contenuti** — lavora su template email, bozze e programmazione social, statistiche, commenti e articoli del blog.
 - **Media e automazioni** — verifica la libreria file, workflow, form e consenso; usa l’interfaccia CRM per upload e dettagli non gestiti dagli helper API.
 - **Pagamenti** — consulta ordini e transazioni in sola lettura.
-- **Pulizia liste** — individua profili chiaramente fasulli, li sottopone alla revisione dell’utente e procede solo dopo dry-run e conferma esplicita.
 
 ## Aggiornamenti
 
@@ -64,9 +63,8 @@ Dopo la configurazione basta chiedere, per esempio:
 - «Crea un contatto per Maria Bianchi e aggiungi il tag cliente-2026.»
 - «Com’è messa la pipeline Vendite questo mese?»
 - «Prepara una risposta WhatsApp a Luca per confermare l’appuntamento.»
-- «Pulisci le liste contatti dallo spam.»
 
-Codex può richiamare esplicitamente `$futuria-crm` o `$pulisci-liste-crm`. In Claude Code le skill del plugin sono disponibili anche tramite i comandi con namespace; normalmente l’agente riconosce la richiesta dal linguaggio naturale.
+Codex può richiamare esplicitamente `$futuria-crm`. In Claude Code le skill del plugin sono disponibili anche tramite i comandi con namespace; normalmente l’agente riconosce la richiesta dal linguaggio naturale.
 
 ## Privacy essenziale
 

@@ -10,7 +10,7 @@
     {
       "name": "futuria-crm",
       "source": "./",
-      "description": "Assistente Futuria CRM per Codex e Claude Code: gestisci contatti, conversazioni, opportunità, appuntamenti, contenuti, pagamenti e pulizia liste direttamente via API con la credenziale protetta dal sistema operativo.",
+      "description": "Assistente Futuria CRM per Codex e Claude Code: gestisci contatti, conversazioni, opportunità, appuntamenti, contenuti, pagamenti direttamente via API con la credenziale protetta dal sistema operativo.",
       "author": {
         "name": "Futuria Marketing"
       },

@@ -13,10 +13,6 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-      - name: Compila lo script di pulizia liste
-        run: python -m py_compile skills/pulisci-liste-crm/scripts/crm-list-cleanup.py skills/futuria-crm/scripts/credential_reader.py
-      - name: Test credenziali cross-platform
-        run: python -m unittest discover -s tests -v
       - name: Valida script macOS
         run: bash -n skills/futuria-crm/scripts/setup-credentials.sh skills/futuria-crm/scripts/launch-credential-setup.sh skills/futuria-crm/scripts/crm-api.sh
       - name: Valida script PowerShell

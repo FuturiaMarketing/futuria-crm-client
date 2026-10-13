@@ -1,6 +1,6 @@
 # Informativa tecnica sul trattamento dei dati
 
-Ultimo aggiornamento: 2026-08-03
+Ultimo aggiornamento: 2026-10-14
 
 Questa informativa descrive il funzionamento tecnico della skill **Futuria CRM** per Codex e Claude Code. Non sostituisce gli accordi privacy tra il cliente, Futuria Marketing, il fornitore dell’agente AI e gli interessati presenti nel CRM.
 
@@ -40,7 +40,6 @@ Riferimenti dei fornitori:
 - L’identificativo dell’account viene salvato in un piccolo file di configurazione locale.
 - Il configuratore grafico viene servito temporaneamente soltanto su `127.0.0.1`; non invia telemetria e non conserva la chiave nei log o nella cache del browser.
 - Come fallback tecnico, l’utente può scegliere variabili d’ambiente; non sono il percorso consigliato per utenti non tecnici.
-- La funzione di pulizia liste crea snapshot e file di revisione sotto `~/.futuria/crm-cleanup/`. Questi file possono contenere dati personali e non vengono cancellati automaticamente.
 
 ## Controlli dell’utente
 
@@ -48,7 +47,6 @@ L’utente può:
 
 - revocare o rigenerare la chiave privata dal proprio account Futuria CRM;
 - rimuovere la copia locale con gli script di configurazione inclusi;
-- eliminare i file prodotti dalla pulizia liste;
 - disinstallare o disabilitare la skill;
 - limitare gli ambiti assegnati alla chiave.
 
@@ -60,4 +58,4 @@ Il repository pubblico contiene istruzioni e script, ma nessuna chiave privata e
 
 Per richieste operative o revoca dell’accesso, contattare il proprio referente Futuria Marketing: <https://futuriamarketing.com>.
 
-Questa informativa è stata verificata rispetto al comportamento tecnico della release `v1.2.0`; la validazione legale e contrattuale resta distinta.
+Questa informativa è stata verificata rispetto al comportamento tecnico della pacchetto `v1.3.0`; la validazione legale e contrattuale resta distinta.
