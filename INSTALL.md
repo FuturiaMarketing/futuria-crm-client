@@ -21,7 +21,7 @@ Il collegamento usa API diretta e una credenziale chiamata **Private Integration
 
 ## Release stabile
 
-Release stabile: `v1.2.1`.
+Release stabile pubblicata: `v1.2.1`. Questo ramo prepara la `v1.3.0`, non ancora rilasciata: i comandi sotto restano fissati alla release pubblicata fino al tag e alla nuova release.
 
 Repository: `https://github.com/FuturiaMarketing/futuria-crm-client`.
 

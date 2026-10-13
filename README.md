@@ -48,7 +48,8 @@ La pagina è disponibile soltanto sul computer dell’utente e per una sessione 
 - **Conversazioni** — legge la cronologia e prepara o invia messaggi dopo conferma.
 - **Opportunità e pipeline** — consulta e aggiorna trattative, valore, stato e fase.
 - **Appuntamenti** — consulta calendari, eventi e note.
-- **Contenuti** — lavora su template email, post social e articoli del blog.
+- **Contenuti** — lavora su template email, bozze e programmazione social, statistiche, commenti e articoli del blog.
+- **Media e automazioni** — verifica la libreria file, workflow, form e consenso; usa l’interfaccia CRM per upload e dettagli non gestiti dagli helper API.
 - **Pagamenti** — consulta ordini e transazioni in sola lettura.
 - **Pulizia liste** — individua profili chiaramente fasulli, li sottopone alla revisione dell’utente e procede solo dopo dry-run e conferma esplicita.
 

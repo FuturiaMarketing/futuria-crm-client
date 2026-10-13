@@ -28,6 +28,14 @@ Write bodies not listed field-by-field here can vary: on a `422`, read the `mess
 - **Write safety:** read the contact → apply the smallest change → re-read to confirm → report the changed fields and the contact id, in Italian.
 - **Bulk deletions / list cleanup:** never improvise — use the `pulisci-liste-crm` flow (`references/contacts-pulizia-liste.md`).
 
+## Imports, segmentation and protection
+
+Isolate an import using created-date/time windows plus stable source/tag criteria, then validate sample contacts and record filters, counts and exact IDs before a bulk action. A cluster created in the same minute is a batch clue, not proof of spam: legitimate imports have the same pattern.
+
+Styled/Unicode names, dotted emails, missing email or social/WhatsApp-only identity are not deletion criteria. Genuine contacts with no engagement are candidates for suppression or re-engagement, not fake contacts; engagement must come from actual email-event data rather than the contact object. Read orders, opportunities and relationship evidence before deciding a contact is disposable; tags alone do not establish the absence of a valid relationship. Keep the existing `pulisci-liste-crm` detection, chat review and dry-run flow: these audit criteria do not silently expand its automated deletion rules.
+
+Retain review decisions, before/after evidence and the minimum exports needed to reproduce the approved operation in the user's protected workspace. Remove only temporary files created by the current task once the retained report can be reproduced; do not delete unrelated files or store contact exports in the skill package.
+
 ## Output example (Italian)
 
 > Ho aggiornato il contatto **Maria Bianchi** nel tuo account Futuria CRM: aggiunto il tag `cliente-2026` e impostato il campo `Città = Padova`. Ho riletto la scheda per conferma.

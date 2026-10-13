@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.3.0 — Unreleased
+
+- Added customer-only API v3 Social Planner instructions, platform payload fields, statistics, comments and Media Library verification.
+- Documented secure-helper upload limits and web fallback without exposing the PIT.
+- Added workflow/form/consent inspection, blog body and imported-article verification, and contact import/protection criteria.
+- Preserved exact publication/deletion authorization and reconciliation after uncertain writes.
+- Corrected wallet guidance to use verified account amounts, currency and recharge settings.
+- Retained the single-account API model and shared Codex/Claude instructions.
+
+
 ## 1.2.1 — 2026-08-03
 
 - Updated the guided setup to recommend selecting every available scope when the user wants the agent to use all supported Futuria CRM functions.

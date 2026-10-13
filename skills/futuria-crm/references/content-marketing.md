@@ -9,14 +9,9 @@ Create and manage content assets in the user's Futuria CRM account: email templa
 - **Mass email is a usage cost.** Sending newsletters/bulk email draws down the wallet — don't trigger sends casually; see the cost model in `references/terminology-and-voice.md`.
 - When drafting copy, match the brand/tone the account already uses; keep the platform name as **Futuria CRM** if it appears.
 
-## Social posting
+## Social posting and Media Library
 
-- Connected profiles: `GET /social-media-posting/{locationId}/accounts` → `results` (validated).
-- List posts: `POST /social-media-posting/{locationId}/posts/list` — body `{"skip": "0", "limit": "10"}` — **skip/limit as strings** (numbers return 422); → `results.{posts, count}` (validated).
-- Read one: `GET /social-media-posting/{locationId}/posts/{postId}`.
-- Create/schedule: `POST /social-media-posting/{locationId}/posts` — include target account ids, text, media, schedule time.
-- Edit: `PUT /social-media-posting/{locationId}/posts/{postId}`.
-- **Publishing is outward-facing.** Confirm the target profiles, the text, the media, and the schedule time with the user before creating or publishing; re-read the post after the write.
+Load `references/social-planner.md` for posts, platform fields, statistics and comments. Load `references/media-library.md` for files and upload limitations.
 
 ## Blog
 
@@ -27,6 +22,10 @@ Create and manage content assets in the user's Futuria CRM account: email templa
 - Create: `POST /blogs/posts`; update: `PUT /blogs/posts/{postId}`.
 - **Order of operations:** resolve blog id → category ids → author id → check slug → create → re-read (and check the public page for published posts). A published article is public — confirm before publishing.
 
-## Output example (Italian)
+## Blog body and public verification
 
-> Ho programmato il post su **Instagram e Facebook** dal tuo account Futuria CRM per giovedì alle 12:00. Testo e immagine come concordato. Vuoi che lo pubblichi subito invece di programmarlo?
+When updating `rawHTML`, include `wordCount` (word count of the rendered text) together with the existing blog, slug and intended status. An update can return success and change `updatedAt` while leaving the body unchanged if this field is omitted. Edit in place first, preserving post ID and public slug; compare the returned body and public page/RSS when published.
+
+Use `status: DRAFT` to hide a post when authorized. Do not assume `ARCHIVED` or an `archived` boolean reproduces the web editor's archive state; verify the actual public visibility. Do not invent a blog DELETE endpoint. Replacing a post is a fallback only after a verified in-place failure: preserve old body/metadata/slug, agree the replacement, and update any user-owned import mapping that refers to the old ID.
+
+For imported articles, verify heading hierarchy, important links, inline image count and placement, featured image, author/category, slug and public status. Remove source navigation/feedback chrome, not useful article content. Before transforming HTML, replace inline images with stable markers; restore the uploaded file URLs at those positions and check no markers were lost. Do not append missing images at the bottom without the user's request. Media upload handling is in `references/media-library.md`.
