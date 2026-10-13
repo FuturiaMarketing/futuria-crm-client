@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.3.0 — Unreleased
+## 1.3.0 — 2026-10-14
 
 - Removed the secondary skill, command, references and local Python tooling; the package installs only futuria-crm.
 - Updated installation, capability descriptions, privacy, security and validation for the single-skill package.
