@@ -54,8 +54,8 @@ Use this when the user asks about costs, credits, or billing. Keep it client-fac
 
 - Futuria CRM bills usage with a **prepaid wallet / credit** system — like topping up a phone SIM.
 - **Fixed fees** (subscription/canone) are separate from **usage costs**. Usage costs draw down the wallet balance.
-- At activation the account normally gets a small **starting credit** so usage-based features can be tested. (Internally the credit is denominated in USD; for the user it is fine to simplify in euro when exact accounting is not the point.)
-- When the starting credit runs out, **auto-recharge** tops the wallet up. **Do not state a fixed recharge amount** unless you have checked that specific account's billing record — the configured amount varies.
+- Check the account billing configuration before stating any starting credit, balance, currency or auto-recharge setting. Unknown values are not zero. Report the actual currency; never relabel USD as EUR or imply a conversion without a verified rate and date.
+- If **auto-recharge** is enabled on that account, it tops the wallet up according to its configured threshold. **Do not state a fixed recharge amount** unless you have checked that specific account's billing record — the configured amount varies.
 - Frame a top-up as **credit that stays available until consumed**, not a new extra service or one-off spend.
 - The user can review month-by-month usage in the billing section of their account.
 - Main usage-cost categories: bulk/newsletter email, automated AI messages, automated WhatsApp messages, WhatsApp monthly activation, and other operational usage services. If a precise price is needed, verify the current public pricing or the account's billing record before quoting.
@@ -70,3 +70,13 @@ Use this when the user asks about costs, credits, or billing. Keep it client-fac
   ❌ "Secondo la documentazione HighLevel, questo campo…"
 - ✅ "Si è verificato un errore di autorizzazione sul tuo account Futuria CRM; verifico il token."
   ❌ "LeadConnector ha risposto 401."
+
+## Technical source lookup (recognition only)
+
+For endpoint maintenance, consult the official technical schemas, translating source terminology under the rules above. These links are for the agent's technical lookup, not customer-facing platform branding:
+
+- Social fields: https://github.com/GoHighLevel/highlevel-api-docs/blob/main/apps/v3/social-planner-v3.json
+- Media fields: https://github.com/GoHighLevel/highlevel-api-docs/blob/main/apps/v3/medias-v3.json
+- Permissions: https://github.com/GoHighLevel/highlevel-api-docs/blob/main/docs/oauth/Scopes.md
+
+Schemas were checked on 2026-10-14; check the current version before relying on an unfamiliar field. Documentation and the user's actual account behavior may differ.

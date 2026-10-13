@@ -80,7 +80,7 @@ Other validated quirks:
 - Some list endpoints enforce small `limit` values — reduce the limit before changing auth assumptions.
 
 ### 429 Too Many Requests
-- Burst rate limit hit. Wait a couple of seconds and retry with backoff; slow the loop (pause between pages).
+- Respect Retry-After and use bounded backoff for reads; slow pagination. Do not blindly retry a creation or send with an uncertain result: reconcile the resulting object first. Stop when the outcome or authorization is unresolved.
 
 ### 200 OK but no visible change
 - Treat as partial/no-op until independently verified.
