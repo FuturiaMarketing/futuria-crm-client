@@ -22,7 +22,6 @@
 - Modifica minima e verifica successiva.
 - Conferma esplicita prima di invii, pubblicazioni, eliminazioni o sostituzioni.
 - Pagamenti e transazioni sono in sola lettura.
-- La pulizia liste usa dry-run, revisione umana e snapshot locale.
 
 ## Segnalazioni
 

@@ -1,10 +1,13 @@
 # Changelog
 
-## 1.3.0 — Unreleased
+## 1.3.0 — 2026-10-14
+
+- Removed the secondary skill, command, references and local Python tooling; the package installs only futuria-crm.
+- Updated installation, capability descriptions, privacy, security and validation for the single-skill package.
 
 - Added customer-only API v3 Social Planner instructions, platform payload fields, statistics, comments and Media Library verification.
 - Documented secure-helper upload limits and web fallback without exposing the PIT.
-- Added workflow/form/consent inspection, blog body and imported-article verification, and contact import/protection criteria.
+- Added workflow/form/consent inspection, blog body and imported-article verification, and contact operations.
 - Preserved exact publication/deletion authorization and reconciliation after uncertain writes.
 - Corrected wallet guidance to use verified account amounts, currency and recharge settings.
 - Retained the single-account API model and shared Codex/Claude instructions.
@@ -27,7 +30,7 @@
 ## 1.1.0 — 2026-07-31
 
 - First formally tagged public release.
-- Shared Futuria CRM and list-cleaning skills for Codex and Claude Code.
+- Shared Futuria CRM instructions for Codex and Claude Code.
 - Protected PIT setup through Windows DPAPI or macOS Keychain.
 - Bundled API helpers that keep the PIT out of chat and agent command arguments.
 - Public installation, privacy and security documentation.
@@ -37,5 +40,4 @@
 
 - Initial API-first, single-account and white-label release on `main`.
 - Human confirmation gates for messages, publications and destructive actions.
-- Contact-list cleanup with chat review, Excel fallback, dry-run and local snapshots.
 - Manifest version published without a formal Git tag or GitHub Release.

@@ -1,7 +1,7 @@
 {
   "name": "futuria-crm",
   "version": "1.3.0",
-  "description": "Assistente Futuria CRM dual-runtime per Codex e Claude Code: l'agente usa il tuo account Futuria CRM per contatti, conversazioni, opportunità, appuntamenti, task, tag, contenuti, pagamenti e pulizia liste. API-first con la credenziale protetta dal sistema operativo; interfaccia web solo come fallback. Risposte sempre in italiano.",
+  "description": "Assistente Futuria CRM dual-runtime per Codex e Claude Code: l'agente usa il tuo account Futuria CRM per contatti, conversazioni, opportunità, appuntamenti, task, tag, contenuti, pagamenti. API-first con la credenziale protetta dal sistema operativo; interfaccia web solo come fallback. Risposte sempre in italiano.",
   "author": {
     "name": "Futuria Marketing",
     "email": "fabrizio@futuriamarketing.com",
@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Futuria CRM",
     "shortDescription": "Assistente per il tuo account Futuria CRM.",
-    "longDescription": "Skill che permette al tuo agente AI di operare sul tuo account Futuria CRM: contatti, conversazioni e messaggi, opportunità e pipeline, appuntamenti, task, tag, email, social, blog, pagamenti e pulizia delle liste contatti. Si collega al tuo account con le tue credenziali e lavora direttamente via API; interfaccia web solo come fallback. Le risposte sono sempre in italiano e parlano sempre di Futuria CRM.",
+    "longDescription": "Skill che permette al tuo agente AI di operare sul tuo account Futuria CRM: contatti, conversazioni e messaggi, opportunità e pipeline, appuntamenti, task, tag, email, social, blog, pagamenti. Si collega al tuo account con le tue credenziali e lavora direttamente via API; interfaccia web solo come fallback. Le risposte sono sempre in italiano e parlano sempre di Futuria CRM.",
     "developerName": "Futuria Marketing",
     "category": "Productivity",
     "capabilities": [
@@ -33,7 +33,6 @@
     "defaultPrompt": [
       "Crea un nuovo contatto nel mio account Futuria CRM.",
       "Mostrami lo stato delle opportunità nella mia pipeline.",
-      "Pulisci le liste contatti del mio account Futuria CRM.",
       "Spiegami come funzionano i crediti del mio account Futuria CRM."
     ],
     "screenshots": []

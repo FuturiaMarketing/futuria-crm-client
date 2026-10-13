@@ -62,7 +62,6 @@ Load per area:
 - `references/getting-started.md` — protected Windows/macOS setup, environment fallback, first sanity read.
 - `references/api-and-troubleshooting.md` — secure API helpers, parameter conventions per endpoint family, pagination, rate limits, error matrix. **The technical foundation for every API call.**
 - `references/contacts-tags-tasks.md` — contacts (search/create/update/upsert/delete), tags, contact tasks and notes, custom fields.
-- `references/contacts-pulizia-liste.md` — pulizia liste: riconoscere ed eliminare spam/fake (skill `pulisci-liste-crm`).
 - `references/conversations-messaging.md` — search conversations, read and send messages.
 - `references/opportunities-pipelines.md` — pipelines and opportunities (search/get/update).
 - `references/calendars-appointments.md` — calendars, events and appointment notes.

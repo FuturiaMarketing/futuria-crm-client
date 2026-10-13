@@ -41,7 +41,6 @@ HOST_ALLOW = BRAND_ALLOW | {
     "skills/futuria-crm/scripts/crm-api.ps1",
     "skills/futuria-crm/scripts/crm-api.sh",
     "skills/futuria-crm/scripts/credential-wizard.mjs",
-    "skills/pulisci-liste-crm/scripts/crm-list-cleanup.py",
 }
 
 PLACEHOLDER_PAT = re.compile(r"\bTODO\b|\bFIXME\b|\bXXX\b")
@@ -113,7 +112,6 @@ def check_packaging():
     manifest_version = claude.get("version")
     for version_path in [
         ROOT / "skills" / "futuria-crm" / "VERSION",
-        ROOT / "skills" / "pulisci-liste-crm" / "VERSION",
     ]:
         if not version_path.exists():
             ERRORS.append(f"[pack]  manca {rel(version_path)}")
@@ -147,7 +145,6 @@ def check_credential_contract():
         ROOT / "skills" / "futuria-crm" / "scripts" / "setup-credentials.sh",
         ROOT / "skills" / "futuria-crm" / "scripts" / "crm-api.ps1",
         ROOT / "skills" / "futuria-crm" / "scripts" / "crm-api.sh",
-        ROOT / "skills" / "futuria-crm" / "scripts" / "credential_reader.py",
         ROOT / "skills" / "futuria-crm" / "scripts" / "launch-credential-setup.ps1",
         ROOT / "skills" / "futuria-crm" / "scripts" / "launch-credential-setup.sh",
         ROOT / "skills" / "futuria-crm" / "scripts" / "credential-wizard.mjs",
